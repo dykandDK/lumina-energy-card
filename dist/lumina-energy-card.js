@@ -366,7 +366,6 @@ class LuminaEnergyCardEditor extends HTMLElement {
     super();
     this.attachShadow({ mode: 'open' });
     this._rendered = false;
-    this._activeTab = 'config';
     this._defaults = (typeof LuminaEnergyCard !== 'undefined' && typeof LuminaEnergyCard.getStubConfig === 'function')
       ? { ...LuminaEnergyCard.getStubConfig() }
       : {};
@@ -435,18 +434,6 @@ class LuminaEnergyCardEditor extends HTMLElement {
         { name: 'sensor_car_soc', label: 'Car SOC Sensor', selector: entitySelector },
         { name: 'show_car_soc', label: 'Show Car SOC', selector: { boolean: {} }, default: false },
         { name: 'car_pct_color', label: 'Car SOC Color', selector: { text: {} }, default: '#00FFFF', helper: 'Hex color for EV SOC text (e.g., #00FFFF).' }
-      ]),
-      typography: define([
-        { name: 'header_font_size', label: 'Header Font Size', selector: { number: { min: 12, max: 32, step: 1, mode: 'slider', unit_of_measurement: 'px' } } },
-        { name: 'daily_label_font_size', label: 'Daily Label Font Size', selector: { number: { min: 8, max: 24, step: 1, mode: 'slider', unit_of_measurement: 'px' } } },
-        { name: 'daily_value_font_size', label: 'Daily Value Font Size', selector: { number: { min: 12, max: 32, step: 1, mode: 'slider', unit_of_measurement: 'px' } } },
-        { name: 'pv_font_size', label: 'PV Text Font Size', selector: { number: { min: 12, max: 28, step: 1, mode: 'slider', unit_of_measurement: 'px' } } },
-        { name: 'battery_soc_font_size', label: 'Battery SOC Font Size', selector: { number: { min: 12, max: 32, step: 1, mode: 'slider', unit_of_measurement: 'px' } } },
-        { name: 'battery_power_font_size', label: 'Battery Power Font Size', selector: { number: { min: 10, max: 28, step: 1, mode: 'slider', unit_of_measurement: 'px' } } },
-        { name: 'load_font_size', label: 'Load Font Size', selector: { number: { min: 10, max: 28, step: 1, mode: 'slider', unit_of_measurement: 'px' } } },
-        { name: 'grid_font_size', label: 'Grid Font Size', selector: { number: { min: 10, max: 28, step: 1, mode: 'slider', unit_of_measurement: 'px' } } },
-        { name: 'car_power_font_size', label: 'Car Power Font Size', selector: { number: { min: 10, max: 28, step: 1, mode: 'slider', unit_of_measurement: 'px' } } },
-        { name: 'car_soc_font_size', label: 'Car SOC Font Size', selector: { number: { min: 8, max: 24, step: 1, mode: 'slider', unit_of_measurement: 'px' } } }
       ])
     };
   }
@@ -476,18 +463,6 @@ class LuminaEnergyCardEditor extends HTMLElement {
     });
     event.detail = { config: newConfig };
     this.dispatchEvent(event);
-  }
-
-  _onTabChanged(ev, tabs) {
-    const target = ev.target;
-    const index = target && Number.isFinite(target.selected) ? target.selected : 0;
-    const clampedIndex = Math.min(Math.max(index, 0), tabs.length - 1);
-    const selectedTab = tabs[clampedIndex];
-    if (selectedTab && selectedTab.id !== this._activeTab) {
-      this._activeTab = selectedTab.id;
-      this._rendered = false;
-      this.render();
-    }
   }
 
   _createSection(title, helper, schema) {
@@ -581,13 +556,6 @@ class LuminaEnergyCardEditor extends HTMLElement {
     return container;
   }
 
-  _buildTypographyContent() {
-    const container = document.createElement('div');
-    container.className = 'card-config';
-    container.appendChild(this._createSection('Typography', 'Tune font sizes for each text block.', this._schemas.typography));
-    return container;
-  }
-
   render() {
     if (!this._hass || !this._config) {
       return;
@@ -599,17 +567,6 @@ class LuminaEnergyCardEditor extends HTMLElement {
 
     const style = document.createElement('style');
     style.textContent = `
-      .tabs-container {
-        margin-bottom: 8px;
-      }
-      ha-tabs {
-        margin: 0 16px;
-        --paper-tabs-selection-bar-color: var(--primary-color);
-      }
-      paper-tab {
-        text-transform: uppercase;
-        font-weight: 600;
-      }
       .section {
         display: flex;
         flex-direction: column;
@@ -640,46 +597,8 @@ class LuminaEnergyCardEditor extends HTMLElement {
       }
     `;
 
-    const lang = (config.language || 'en').toLowerCase();
-    const tabLabels = {
-      config: { en: 'Configuration', it: 'Configurazione', de: 'Konfiguration' },
-      typography: { en: 'Typography', it: 'Tipografia', de: 'Typografie' }
-    };
-
-    const resolveLabel = (key) => {
-      const entry = tabLabels[key];
-      if (!entry) {
-        return key;
-      }
-      return entry[lang] || entry.en;
-    };
-
-    const tabs = [
-      { id: 'config', label: resolveLabel('config') },
-      { id: 'typography', label: resolveLabel('typography') }
-    ];
-
-    const tabsContainer = document.createElement('div');
-    tabsContainer.className = 'tabs-container';
-    const tabsEl = document.createElement('ha-tabs');
-    tabsEl.selected = Math.max(0, tabs.findIndex((tab) => tab.id === this._activeTab));
-    tabsEl.addEventListener('iron-activate', (ev) => this._onTabChanged(ev, tabs));
-
-    tabs.forEach((tab) => {
-      const tabEl = document.createElement('paper-tab');
-      tabEl.textContent = tab.label;
-      tabsEl.appendChild(tabEl);
-    });
-
-    tabsContainer.appendChild(tabsEl);
-
-    const activeContent = this._activeTab === 'typography'
-      ? this._buildTypographyContent()
-      : this._buildConfigContent();
-
     this.shadowRoot.appendChild(style);
-    this.shadowRoot.appendChild(tabsContainer);
-    this.shadowRoot.appendChild(activeContent);
+    this.shadowRoot.appendChild(this._buildConfigContent());
     this._rendered = true;
   }
 }
