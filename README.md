@@ -27,8 +27,6 @@ Limuna Energy Card repository is <https://github.com/ratava/lumina-energy-card>.
 
 Lumina Energy Card is a Home Assistant custom Lovelace card that renders animated energy flows, aggregates PV strings and batteries, and surfaces optional EV charging metrics in a cinematic layout.
 
-![Lumina Energy Card Preview](dist/lumina_background.jpg)
-
 ### Key Features (EN)
 
 - Up to six PV sensors with smart per-string or totalised labels
