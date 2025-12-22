@@ -2474,6 +2474,25 @@ class LuminaEnergyCardEditor extends HTMLElement {
     this.dispatchEvent(event);
   }
 
+  _debouncedConfigChanged(newConfig, immediate = false) {
+    if (immediate) {
+      if (this._configChangeTimer) {
+        clearTimeout(this._configChangeTimer);
+        this._configChangeTimer = null;
+      }
+      this.configChanged(newConfig);
+      return;
+    }
+    if (this._configChangeTimer) {
+      clearTimeout(this._configChangeTimer);
+    }
+    const delay = 800;
+    this._configChangeTimer = setTimeout(() => {
+      this._configChangeTimer = null;
+      this.configChanged(this._config);
+    }, delay);
+  }
+
   _createSection(sectionDef) {
     const { id, title, helper, schema, defaultOpen, renderContent } = sectionDef;
     const section = document.createElement('details');
@@ -2599,6 +2618,12 @@ class LuminaEnergyCardEditor extends HTMLElement {
       }
       this._onFormValueChanged(ev, schema);
     });
+    // Apply config immediately when any inner input loses focus
+    form.addEventListener('focusout', (ev) => {
+      // Ensure the event originated from inside this form
+      if (!form.contains(ev.target)) return;
+      this._debouncedConfigChanged(this._config, true);
+    });
     return form;
   }
 
@@ -2657,9 +2682,18 @@ class LuminaEnergyCardEditor extends HTMLElement {
       this._updateFieldValue(field.name, color);
     });
 
+    // Apply config immediately when color inputs lose focus
+    textInput.addEventListener('blur', () => {
+      this._debouncedConfigChanged(this._config, true);
+    });
+
     colorInput.addEventListener('input', (e) => {
       textInput.value = e.target.value;
       this._updateFieldValue(field.name, e.target.value);
+    });
+
+    colorInput.addEventListener('blur', () => {
+      this._debouncedConfigChanged(this._config, true);
     });
 
     inputWrapper.appendChild(colorInput);
@@ -2697,6 +2731,11 @@ class LuminaEnergyCardEditor extends HTMLElement {
       const newValue = ev.detail.value[field.name];
       this._updateFieldValue(field.name, newValue);
     });
+    // When an inner input loses focus, apply the config immediately
+    form.addEventListener('focusout', (ev) => {
+      if (!form.contains(ev.target)) return;
+      this._debouncedConfigChanged(this._config, true);
+    });
 
     wrapper.appendChild(form);
     return wrapper;
@@ -2730,7 +2769,7 @@ class LuminaEnergyCardEditor extends HTMLElement {
     }
     const newConfig = { ...this._config, [fieldName]: value };
     this._config = newConfig;
-    this.configChanged(newConfig);
+    this._debouncedConfigChanged(newConfig, false);
   }
 
   _onFormValueChanged(ev, schema) {
@@ -2769,9 +2808,14 @@ class LuminaEnergyCardEditor extends HTMLElement {
     }
 
     this._config = newConfig;
-    this.configChanged(newConfig);
-    this._rendered = false;
-    this.render();
+    this._debouncedConfigChanged(newConfig, nextDisplayUnit !== prevDisplayUnit);
+    // Only re-render the editor when the display unit changed because that
+    // affects selector definitions (W vs kW). Re-rendering on every input
+    // causes the active input to be recreated and loses focus while typing.
+    if (nextDisplayUnit !== prevDisplayUnit) {
+      this._rendered = false;
+      this.render();
+    }
   }
 
   _convertThresholdValues(config, fromUnit, toUnit) {
