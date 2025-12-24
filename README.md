@@ -4,7 +4,7 @@
 ![Version](https://img.shields.io/badge/version-1.1.21-blue.svg)
 
 Limuna Energy Card repository is <https://github.com/ratava/lumina-energy-card>.
-https://github.com/user-attachments/assets/a598c4a4-2b4c-4827-b1f8-bb561a2089ec
+
 
 ![Lumina Energy Card Background](dist/lumina_background.jpg)
 
