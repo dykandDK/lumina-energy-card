@@ -1901,6 +1901,9 @@ class LuminaEnergyCardEditor extends HTMLElement {
       ? { ...LuminaEnergyCard.getStubConfig() }
       : {};
     this._strings = this._buildStrings();
+    this._externalLocales = null;
+    this._localesBase = null;
+    this._loadExternalLocales();
     this._sectionOpenState = {};
   }
 
@@ -2397,6 +2400,126 @@ class LuminaEnergyCardEditor extends HTMLElement {
         }
       },
     };
+  }
+
+  // Attempt to discover and load external locale files (locales/index.json -> locales/{lang}.json)
+  _detectLocalesBase() {
+    if (this._localesBase) return this._localesBase;
+    try {
+      // Try to find the script tag that loaded this file
+      const scripts = (document && document.scripts) ? Array.from(document.scripts) : [];
+      const match = scripts.find(s => s.src && s.src.indexOf('lumina-energy-card') !== -1);
+      if (match && match.src) {
+        const url = match.src;
+        const base = url.substring(0, url.lastIndexOf('/')) + '/';
+        this._localesBase = base;
+        return base;
+      }
+    } catch (e) {
+      // ignore
+    }
+    // Fallback to common HA community local path
+    this._localesBase = '/local/community/lumina-energy-card/';
+    return this._localesBase;
+  }
+
+  async _tryFetchJson(url) {
+    try {
+      const res = await fetch(url, { cache: 'no-cache' });
+      if (!res || !res.ok) return null;
+      return await res.json();
+    } catch (e) {
+      return null;
+    }
+  }
+
+  _loadScript(src) {
+    return new Promise((resolve, reject) => {
+      try {
+        if (window && window.i18next) return resolve(window.i18next);
+        const existing = document.querySelector(`script[data-i18n-src="${src}"]`);
+        if (existing) {
+          existing.addEventListener('load', () => resolve(window.i18next), { once: true });
+          existing.addEventListener('error', (e) => reject(e), { once: true });
+          return;
+        }
+        const s = document.createElement('script');
+        s.src = src;
+        s.async = true;
+        s.dataset.i18nSrc = src;
+        s.addEventListener('load', () => resolve(window.i18next), { once: true });
+        s.addEventListener('error', (e) => reject(e), { once: true });
+        document.head.appendChild(s);
+      } catch (err) {
+        reject(err);
+      }
+    });
+  }
+
+  async _loadExternalLocales() {
+    const base = this._detectLocalesBase();
+    const indexPaths = [
+      `${base}locales/index.json`,
+      `${base}locales/index.js`,
+      `${base}index.json`,
+      `${base}locales.json`,
+      '/local/community/lumina-energy-card/locales/index.json'
+    ];
+
+    let index = null;
+    for (const p of indexPaths) {
+      index = await this._tryFetchJson(p);
+      if (index) {
+        this._localesBase = p.replace(/locales\/index\.(json|js)$|index\.json$/,'');
+        break;
+      }
+    }
+    if (!index || !Array.isArray(index) || index.length === 0) {
+      return; // no external locales available
+    }
+
+    const resources = {};
+    for (const lang of index) {
+      const langPath = `${this._localesBase}locales/${lang}.json`;
+      const data = await this._tryFetchJson(langPath);
+      if (data) {
+        resources[lang] = data;
+      }
+    }
+    if (Object.keys(resources).length === 0) return;
+
+    try {
+      // Load i18next if not present
+      if (!window.i18next) {
+        await this._loadScript('https://unpkg.com/i18next@21.9.2/dist/umd/i18next.min.js');
+      }
+      // Initialize i18next with loaded resources
+      if (window.i18next && typeof window.i18next.init === 'function') {
+        window.i18next.init({ resources, lng: 'en', fallbackLng: 'en' });
+      }
+    } catch (e) {
+      // ignore library load errors; we'll just merge resources locally
+    }
+
+    // Merge loaded resources into internal _strings so existing logic can use them
+    this._externalLocales = resources;
+    for (const [lang, data] of Object.entries(resources)) {
+      this._strings[lang] = data;
+    }
+
+    // Trigger an editor refresh if open or a rerender for runtime
+    this._onLocalesLoaded();
+  }
+
+  _onLocalesLoaded() {
+    try {
+      this._forceRender = true;
+      if (this._isEditorActive()) {
+        this.render();
+      }
+    } catch (e) {
+      // ignore
+    }
   }
 
   _currentLanguage() {
