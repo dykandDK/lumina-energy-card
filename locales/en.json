@@ -47,6 +47,9 @@
     "sensor_grid_power": { "label": "Grid Power", "helper": "Positive/negative grid flow sensor. Specify either this sensor or both Grid Import Sensor and Grid Export Sensor." },
     "sensor_grid_import": { "label": "Grid Import Sensor", "helper": "Optional entity reporting grid import (positive) power." },
     "sensor_grid_export": { "label": "Grid Export Sensor", "helper": "Optional entity reporting grid export (positive) power." },
+    "sensor_grid_import_daily": { "label": "Daily Grid Import Sensor", "helper": "Optional entity reporting cumulative grid import for the current day." },
+    "sensor_grid_export_daily": { "label": "Daily Grid Export Sensor", "helper": "Optional entity reporting cumulative grid export for the current day." },
+    "show_daily_grid": { "label": "Show Daily Grid", "helper": "Display the daily import/export totals below the grid power value when enabled." },
 
     "pv_tot_color": { "label": "PV Total Color", "helper": "Colour applied to the PV TOTAL text line." },
     "pv_primary_color": { "label": "PV 1 Flow Color", "helper": "Colour used for the primary PV animation line." },

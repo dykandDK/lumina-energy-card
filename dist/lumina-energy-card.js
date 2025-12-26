@@ -959,6 +959,8 @@ class LuminaEnergyCard extends HTMLElement {
     let gridNet = 0;
     let gridImport = 0;
     let gridExport = 0;
+    let gridImportDaily = 0;
+    let gridExportDaily = 0;
     let gridDirection = 1;
     let gridMagnitude = 0;
     let gridActive = false;
@@ -1003,6 +1005,14 @@ class LuminaEnergyCard extends HTMLElement {
         if (Math.abs(gridExport) < gridActivityThreshold) {
           gridExport = 0;
         }
+      }
+      if (config.sensor_grid_import_daily) {
+        const raw = this.getStateSafe(config.sensor_grid_import_daily);
+        gridImportDaily = Number.isFinite(Number(raw)) ? Number(raw) : 0;
+      }
+      if (config.sensor_grid_export_daily) {
+        const raw = this.getStateSafe(config.sensor_grid_export_daily);
+        gridExportDaily = Number.isFinite(Number(raw)) ? Number(raw) : 0;
       }
       gridNet = gridImport - gridExport;
       if (config.invert_grid) {
@@ -1255,6 +1265,24 @@ class LuminaEnergyCard extends HTMLElement {
       };
     });
 
+    // Build optional grid daily lines (import/export cumulative values)
+    const gridLinesRaw = [];
+    if (config.sensor_grid_import_daily && Number.isFinite(gridImportDaily)) {
+      gridLinesRaw.push({ key: 'grid-import-daily', text: `IMP DAY: ${(gridImportDaily / 1000).toFixed(2)} kWh`, fill: gridImportColor });
+    }
+    if (config.sensor_grid_export_daily && Number.isFinite(gridExportDaily)) {
+      gridLinesRaw.push({ key: 'grid-export-daily', text: `EXP DAY: ${(gridExportDaily / 1000).toFixed(2)} kWh`, fill: gridExportColor });
+    }
+    const gridLineCount = Math.min(gridLinesRaw.length, 2);
+    const gridBaseY = TEXT_POSITIONS.grid.y + 18;
+    const gridLines = Array.from({ length: 2 }, (_, index) => {
+      if (index < gridLineCount) {
+        const line = gridLinesRaw[index];
+        return { ...line, y: gridBaseY + index * (grid_font_size + 4), visible: true };
+      }
+      return { key: `grid-placeholder-${index}`, text: '', fill: effectiveGridColor, y: gridBaseY + index * (grid_font_size + 4), visible: false };
+    });
+
     // Build load display lines when Array 2 is active (include per-line colours)
     const houseFill = resolveColor(config.house_total_color, C_CYAN);
     const inv1Fill = resolveColor(config.inv1_color, pvPrimaryColor);
@@ -1346,7 +1374,7 @@ class LuminaEnergyCard extends HTMLElement {
       batterySoc: { text: `${Math.floor(avg_soc)}%`, fontSize: battery_soc_font_size, fill: C_WHITE },
       batteryPower: { text: this.formatPower(Math.abs(total_bat_w), use_kw), fontSize: battery_power_font_size, fill: bat_col },
       load: (loadLines && loadLines.length) ? { lines: loadLines, y: loadY, fontSize: load_font_size, fill: effectiveLoadTextColor } : { text: this.formatPower(loadValue, use_kw), fontSize: load_font_size, fill: effectiveLoadTextColor },
-      grid: { text: this.formatPower(Math.abs(gridNet), use_kw), fontSize: grid_font_size, fill: effectiveGridColor },
+      grid: { text: this.formatPower(Math.abs(gridNet), use_kw), fontSize: grid_font_size, fill: effectiveGridColor, lines: gridLines },
       car1: car1View,
       car2: car2View,
       flows,
@@ -1491,6 +1519,9 @@ class LuminaEnergyCard extends HTMLElement {
           <text data-role="load-line-2" x="${TEXT_POSITIONS.home.x}" y="${TEXT_POSITIONS.home.y}" transform="${TEXT_TRANSFORMS.home}" fill="${(viewState.load.lines && viewState.load.lines[2] && viewState.load.lines[2].fill) || viewState.load.fill}" font-size="${viewState.load.fontSize}" style="${TXT_STYLE}; display:none;"></text>
           <text data-role="grid-power" x="${TEXT_POSITIONS.grid.x}" y="${TEXT_POSITIONS.grid.y}" transform="${TEXT_TRANSFORMS.grid}" fill="${viewState.grid.fill}" font-size="${viewState.grid.fontSize}" style="${TXT_STYLE}">${viewState.grid.text}</text>
 
+          <text data-role="grid-line-0" x="${TEXT_POSITIONS.grid.x}" y="${TEXT_POSITIONS.grid.y}" transform="${TEXT_TRANSFORMS.grid}" fill="${(viewState.grid.lines && viewState.grid.lines[0] && viewState.grid.lines[0].fill) || viewState.grid.fill}" font-size="${viewState.grid.fontSize}" style="${TXT_STYLE}; display:none;"></text>
+          <text data-role="grid-line-1" x="${TEXT_POSITIONS.grid.x}" y="${TEXT_POSITIONS.grid.y}" transform="${TEXT_TRANSFORMS.grid}" fill="${(viewState.grid.lines && viewState.grid.lines[1] && viewState.grid.lines[1].fill) || viewState.grid.fill}" font-size="${viewState.grid.fontSize}" style="${TXT_STYLE}; display:none;"></text>
+
           <text data-role="car1-label" x="${viewState.car1.label.x}" y="${viewState.car1.label.y}" transform="${viewState.car1.label.transform}" fill="${viewState.car1.label.fill}" font-size="${viewState.car1.label.fontSize}" style="${TXT_STYLE}; display:${car1Display};">${viewState.car1.label.text}</text>
           <text data-role="car1-power" x="${viewState.car1.power.x}" y="${viewState.car1.power.y}" transform="${viewState.car1.power.transform}" fill="${viewState.car1.power.fill}" font-size="${viewState.car1.power.fontSize}" style="${TXT_STYLE}; display:${car1Display};">${viewState.car1.power.text}</text>
           <text data-role="car1-soc" x="${viewState.car1.soc.x}" y="${viewState.car1.soc.y}" transform="${viewState.car1.soc.transform}" fill="${viewState.car1.soc.fill}" font-size="${viewState.car1.soc.fontSize}" style="${TXT_STYLE}; display:${car1SocDisplay};">${viewState.car1.soc.text}</text>
@@ -1525,6 +1556,7 @@ class LuminaEnergyCard extends HTMLElement {
       loadText: root.querySelector('[data-role="load-power"]'),
       loadLines: Array.from({ length: 3 }, (_, index) => root.querySelector(`[data-role="load-line-${index}"]`)),
       gridText: root.querySelector('[data-role="grid-power"]'),
+      gridLines: Array.from({ length: 2 }, (_, index) => root.querySelector(`[data-role="grid-line-${index}"]`)),
       car1Label: root.querySelector('[data-role="car1-label"]'),
       car1Power: root.querySelector('[data-role="car1-power"]'),
       car1Soc: root.querySelector('[data-role="car1-soc"]'),
@@ -1741,6 +1773,57 @@ class LuminaEnergyCard extends HTMLElement {
       }
       if (!prev.load || prev.load.fontSize !== viewState.load.fontSize) {
         refs.loadText.setAttribute('font-size', viewState.load.fontSize);
+      }
+    }
+
+    if (refs.gridText) {
+      const lines = viewState.grid && viewState.grid.lines && viewState.grid.lines.length ? viewState.grid.lines : null;
+      if (lines) {
+        if (refs.gridLines && refs.gridLines.length) {
+          const baseY = TEXT_POSITIONS.grid.y;
+          const lineSpacing = viewState.grid.fontSize + 4;
+          lines.forEach((l, idx) => {
+            const node = refs.gridLines[idx];
+            if (!node) return;
+            const prevLine = prev.grid && prev.grid.lines ? (prev.grid.lines[idx] || {}) : undefined;
+            if (!prev.grid || !prev.grid.lines || prevLine.text !== l.text) {
+              node.textContent = l.text;
+            }
+            if (!prev.grid || !prev.grid.lines || prevLine.fill !== l.fill) {
+              node.setAttribute('fill', l.fill || viewState.grid.fill);
+            }
+            if (!prev.grid || prev.grid.fontSize !== viewState.grid.fontSize) {
+              node.setAttribute('font-size', viewState.grid.fontSize);
+            }
+            const desiredY = baseY + idx * lineSpacing;
+            if (!prev.grid || prev.grid.y !== desiredY) {
+              node.setAttribute('y', desiredY);
+            }
+            if (node.style.display !== 'inline') node.style.display = 'inline';
+          });
+          for (let i = lines.length; i < refs.gridLines.length; i++) {
+            const node = refs.gridLines[i];
+            if (node && node.style.display !== 'none') node.style.display = 'none';
+          }
+        }
+        if (refs.gridText.style.display !== 'none') refs.gridText.style.display = 'none';
+      } else {
+        if (!prev.grid || prev.grid.text !== viewState.grid.text) {
+          refs.gridText.textContent = viewState.grid.text || '';
+        }
+        if (!prev.grid || prev.grid.y !== undefined) {
+          refs.gridText.setAttribute('y', TEXT_POSITIONS.grid.y);
+        }
+        if (refs.gridLines && refs.gridLines.length) {
+          refs.gridLines.forEach((node) => { if (node && node.style.display !== 'none') node.style.display = 'none'; });
+        }
+        if (refs.gridText.style.display !== 'inline') refs.gridText.style.display = 'inline';
+      }
+      if (!prev.grid || prev.grid.fill !== viewState.grid.fill) {
+        refs.gridText.setAttribute('fill', viewState.grid.fill);
+      }
+      if (!prev.grid || prev.grid.fontSize !== viewState.grid.fontSize) {
+        refs.gridText.setAttribute('font-size', viewState.grid.fontSize);
       }
     }
 
@@ -1975,6 +2058,8 @@ class LuminaEnergyCardEditor extends HTMLElement {
           sensor_grid_power: { label: 'Grid Power', helper: 'Positive/negative grid flow sensor. Specify either this sensor or both Grid Import Sensor and Grid Export Sensor.' },
           sensor_grid_import: { label: 'Grid Import Sensor', helper: 'Optional entity reporting grid import (positive) power.' },
           sensor_grid_export: { label: 'Grid Export Sensor', helper: 'Optional entity reporting grid export (positive) power.' },
+          sensor_grid_import_daily: { label: 'Daily Grid Import Sensor', helper: 'Optional entity reporting cumulative grid import for the current day.' },
+          sensor_grid_export_daily: { label: 'Daily Grid Export Sensor', helper: 'Optional entity reporting cumulative grid export for the current day.' },
           pv_tot_color: { label: 'PV Total Color', helper: 'Colour applied to the PV TOTAL text line.' },
           pv_primary_color: { label: 'PV 1 Flow Color', helper: 'Colour used for the primary PV animation line.' },
           pv_secondary_color: { label: 'PV 2 Flow Color', helper: 'Colour used for the secondary PV animation line when available.' },
@@ -2104,6 +2189,8 @@ class LuminaEnergyCardEditor extends HTMLElement {
           sensor_grid_power: { label: 'Potenza rete', helper: 'Sensore flusso rete positivo/negativo. Specificare o questo sensore o entrambi il Sensore import rete e il Sensore export rete.' },
           sensor_grid_import: { label: 'Sensore import rete', helper: 'Entita opzionale che riporta la potenza di import.' },
           sensor_grid_export: { label: 'Sensore export rete', helper: 'Entita opzionale che riporta la potenza di export.' },
+          sensor_grid_import_daily: { label: 'Sensore import rete giornaliero', helper: 'Entita opzionale che riporta l import cumulativo della rete per il giorno corrente.' },
+          sensor_grid_export_daily: { label: 'Sensore export rete giornaliero', helper: 'Entita opzionale che riporta l export cumulativo della rete per il giorno corrente.' },
           pv_primary_color: { label: 'Colore flusso FV 1', helper: 'Colore utilizzato per l animazione FV principale.' },
           pv_tot_color: { label: 'Colore PV TOTALE', helper: 'Colore applicato alla riga PV TOTALE.' },
           pv_secondary_color: { label: 'Colore flusso FV 2', helper: 'Colore utilizzato per la seconda linea FV quando presente.' },
@@ -2233,6 +2320,8 @@ class LuminaEnergyCardEditor extends HTMLElement {
           sensor_grid_power: { label: 'Netzleistung', helper: 'Sensor fuer positiven/negativen Netzfluss. Geben Sie entweder diesen Sensor an oder sowohl den Netzimport-Sensor als auch den Netzexport-Sensor.' },
           sensor_grid_import: { label: 'Netzimport Sensor', helper: 'Optionale Entitaet fuer positiven Netzimport.' },
           sensor_grid_export: { label: 'Netzexport Sensor', helper: 'Optionale Entitaet fuer positiven Netzexport.' },
+          sensor_grid_import_daily: { label: 'Tages-Netzimport Sensor', helper: 'Optionale Entitaet, die den kumulierten Netzimport fuer den aktuellen Tag meldet.' },
+          sensor_grid_export_daily: { label: 'Tages-Netzexport Sensor', helper: 'Optionale Entitaet, die den kumulierten Netzexport fuer den aktuellen Tag meldet.' },
           pv_primary_color: { label: 'PV 1 Flussfarbe', helper: 'Farbe fuer die primaere PV-Animationslinie.' },
           pv_tot_color: { label: 'PV Gesamt Farbe', helper: 'Farbe fuer die PV Gesamt Zeile.' },
           pv_secondary_color: { label: 'PV 2 Flussfarbe', helper: 'Farbe fuer die zweite PV-Linie (falls vorhanden).' },
@@ -2364,6 +2453,8 @@ class LuminaEnergyCardEditor extends HTMLElement {
           sensor_grid_power: { label: 'Puissance réseau', helper: 'Capteur de flux réseau positif/négatif. Spécifiez soit ce capteur soit les capteurs Import/Export réseau.' },
           sensor_grid_import: { label: 'Capteur import réseau', helper: 'Entité optionnelle rapportant l import réseau (valeurs positives).' },
           sensor_grid_export: { label: 'Capteur export réseau', helper: 'Entité optionnelle rapportant l export réseau (valeurs positives).' },
+          sensor_grid_import_daily: { label: 'Capteur import réseau journalier', helper: 'Entité optionnelle rapportant l import cumulatif réseau pour la journée en cours.' },
+          sensor_grid_export_daily: { label: 'Capteur export réseau journalier', helper: 'Entité optionnelle rapportant l export cumulatif réseau pour la journée en cours.' },
           pv_tot_color: { label: 'Couleur PV totale', helper: 'Couleur appliquée à la ligne/texte PV TOTAL.' },
           pv_primary_color: { label: 'Couleur flux PV 1', helper: 'Couleur utilisée pour la ligne d animation PV primaire.' },
           pv_secondary_color: { label: 'Couleur flux PV 2', helper: 'Couleur utilisée pour la ligne d animation PV secondaire si disponible.' },
@@ -2761,6 +2852,8 @@ class LuminaEnergyCardEditor extends HTMLElement {
         { name: 'sensor_grid_power', label: fields.sensor_grid_power.label, helper: fields.sensor_grid_power.helper, selector: entitySelector },
         { name: 'sensor_grid_import', label: fields.sensor_grid_import.label, helper: fields.sensor_grid_import.helper, selector: entitySelector },
         { name: 'sensor_grid_export', label: fields.sensor_grid_export.label, helper: fields.sensor_grid_export.helper, selector: entitySelector },
+        { name: 'sensor_grid_import_daily', label: fields.sensor_grid_import_daily.label, helper: fields.sensor_grid_import_daily.helper, selector: entitySelector },
+        { name: 'sensor_grid_export_daily', label: fields.sensor_grid_export_daily.label, helper: fields.sensor_grid_export_daily.helper, selector: entitySelector },
         { name: 'invert_grid', label: fields.invert_grid.label, helper: fields.invert_grid.helper, selector: { boolean: {} }, default: false },
         { name: 'sensor_car_power', label: fields.sensor_car_power.label, helper: fields.sensor_car_power.helper, selector: entitySelector },
         { name: 'sensor_car_soc', label: fields.sensor_car_soc.label, helper: fields.sensor_car_soc.helper, selector: entitySelector },

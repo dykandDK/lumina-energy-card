@@ -17,6 +17,10 @@
 
     "sensor_pv_total": { "label": "PV totaal sensor", "helper": "Optionele geaggregeerde productiesensor die als gecombineerde lijn wordt weergegeven." },
     "sensor_daily": { "label": "Dagelijkse productie sensor (Vereist)", "helper": "Sensor die de dagelijkse productietotalen rapporteert." }
+    ,
+    "sensor_grid_import_daily": { "label": "Dagelijkse net import sensor", "helper": "Optionele sensor die de cumulatieve net import voor de dag rapporteert." },
+    "sensor_grid_export_daily": { "label": "Dagelijkse net export sensor", "helper": "Optionele sensor die de cumulatieve net export voor de dag rapporteert." },
+    "show_daily_grid": { "label": "Toon dagelijkse netwaarden", "helper": "Laat de dagelijkse import-/exporttotalen zien onder de actuele netstroom wanneer ingeschakeld." }
   },
   "options": {
     "languages": [

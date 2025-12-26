@@ -40,6 +40,9 @@
     "sensor_grid_power": { "label": "Netzleistung", "helper": "Sensor fuer positiven/negativen Netzfluss. Geben Sie entweder diesen Sensor an oder sowohl den Netzimport-Sensor als auch den Netzexport-Sensor." },
     "sensor_grid_import": { "label": "Netzimport Sensor", "helper": "Optionale Entitaet fuer positiven Netzimport." },
     "sensor_grid_export": { "label": "Netzexport Sensor", "helper": "Optionale Entitaet fuer positiven Netzexport." },
+    "sensor_grid_import_daily": { "label": "Tagesimport Netz Sensor", "helper": "Optionale Entitaet, die die kumulative Netzimportleistung fuer den aktuellen Tag meldet." },
+    "sensor_grid_export_daily": { "label": "Tagesexport Netz Sensor", "helper": "Optionale Entitaet, die die kumulative Netzexportleistung fuer den aktuellen Tag meldet." },
+    "show_daily_grid": { "label": "Tageswerte Netz anzeigen", "helper": "Zeige die taeglichen Import-/Exportwerte zusammen mit dem aktuellen Netzwert an, wenn aktiviert." },
 
     "pv_primary_color": { "label": "PV 1 Flussfarbe", "helper": "Farbe fuer die primaere PV-Animationslinie." },
     "pv_tot_color": { "label": "PV Gesamt Farbe", "helper": "Farbe fuer die PV Gesamt Zeile." },

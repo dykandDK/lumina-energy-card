@@ -142,6 +142,18 @@
       "label": "Netzexport-Sensor",
       "helper": "Optionaler Sensor für Netexport (positiver Wert)."
     },
+    "sensor_grid_import_daily": {
+      "label": "Tagesimport Netz Sensor",
+      "helper": "Optionaler Sensor, der die kumulative Netzimportleistung für den aktuellen Tag meldet."
+    },
+    "sensor_grid_export_daily": {
+      "label": "Tagesexport Netz Sensor",
+      "helper": "Optionaler Sensor, der die kumulative Netzexportleistung für den aktuellen Tag meldet."
+    },
+    "show_daily_grid": {
+      "label": "Tageswerte Netz anzeigen",
+      "helper": "Zeige die täglichen Import-/Exportwerte zusammen mit dem aktuellen Netzwert an, wenn aktiviert."
+    },
 
     "pv_tot_color": {
       "label": "PV-Gesamtfarbe",

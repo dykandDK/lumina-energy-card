@@ -47,6 +47,9 @@
     "sensor_grid_power": { "label": "Puissance réseau", "helper": "Capteur de flux réseau positif/négatif. Spécifiez soit ce capteur soit les capteurs Import/Export réseau." },
     "sensor_grid_import": { "label": "Capteur import réseau", "helper": "Entité optionnelle rapportant l import réseau (valeurs positives)." },
     "sensor_grid_export": { "label": "Capteur export réseau", "helper": "Entité optionnelle rapportant l export réseau (valeurs positives)." },
+    "sensor_grid_import_daily": { "label": "Capteur import réseau quotidien", "helper": "Entité optionnelle rapportant l import cumulatif du réseau pour la journée." },
+    "sensor_grid_export_daily": { "label": "Capteur export réseau quotidien", "helper": "Entité optionnelle rapportant l export cumulatif vers le réseau pour la journée." },
+    "show_daily_grid": { "label": "Afficher le réseau quotidien", "helper": "Affiche les totaux d import/export quotidiens sous la puissance réseau actuelle lorsqu activé." },
 
     "pv_tot_color": { "label": "Couleur PV totale", "helper": "Couleur appliquée à la ligne/texte PV TOTAL." },
     "pv_primary_color": { "label": "Couleur flux PV 1", "helper": "Couleur utilisée pour la ligne d animation PV primaire." },

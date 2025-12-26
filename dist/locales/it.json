@@ -142,6 +142,18 @@
       "label": "Sensore export rete",
       "helper": "Sensore opzionale che riporta l’export verso la rete (valore positivo)."
     },
+    "sensor_grid_import_daily": {
+      "label": "Sensore import rete giornaliero",
+      "helper": "Sensore opzionale che riporta l’import cumulato dalla rete per la giornata."
+    },
+    "sensor_grid_export_daily": {
+      "label": "Sensore export rete giornaliero",
+      "helper": "Sensore opzionale che riporta l’export cumulato verso la rete per la giornata."
+    },
+    "show_daily_grid": {
+      "label": "Mostra import/export giornaliero",
+      "helper": "Mostra i totali giornalieri di import ed export assieme alla potenza di rete attuale."
+    },
 
     "pv_tot_color": {
       "label": "Colore PV totale",

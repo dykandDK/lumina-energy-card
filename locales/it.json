@@ -40,6 +40,9 @@
     "sensor_grid_power": { "label": "Potenza rete", "helper": "Sensore flusso rete positivo/negativo. Specificare o questo sensore o entrambi il Sensore import rete e il Sensore export rete." },
     "sensor_grid_import": { "label": "Sensore import rete", "helper": "Entita opzionale che riporta la potenza di import." },
     "sensor_grid_export": { "label": "Sensore export rete", "helper": "Entita opzionale che riporta la potenza di export." },
+    "sensor_grid_import_daily": { "label": "Sensore import rete giornaliero", "helper": "Entita opzionale che riporta l import cumulato dalla rete per la giornata." },
+    "sensor_grid_export_daily": { "label": "Sensore export rete giornaliero", "helper": "Entita opzionale che riporta l export cumulato verso la rete per la giornata." },
+    "show_daily_grid": { "label": "Mostra import/export giornaliero", "helper": "Mostra i totali giornalieri di import ed export assieme alla potenza di rete attuale." },
 
     "pv_primary_color": { "label": "Colore flusso FV 1", "helper": "Colore utilizzato per l animazione FV principale." },
     "pv_tot_color": { "label": "Colore PV TOTALE", "helper": "Colore applicato alla riga PV TOTALE." },

@@ -142,6 +142,18 @@
       "label": "Capteur d’export réseau",
       "helper": "Capteur optionnel indiquant l’export réseau (valeur positive)."
     },
+    "sensor_grid_import_daily": {
+      "label": "Capteur import réseau quotidien",
+      "helper": "Capteur optionnel indiquant l’import cumulatif du réseau pour la journée."
+    },
+    "sensor_grid_export_daily": {
+      "label": "Capteur export réseau quotidien",
+      "helper": "Capteur optionnel indiquant l’export cumulatif vers le réseau pour la journée."
+    },
+    "show_daily_grid": {
+      "label": "Afficher le réseau quotidien",
+      "helper": "Affiche les totaux d’import/export quotidiens sous la puissance réseau actuelle lorsqu’il est activé."
+    },
 
     "pv_tot_color": {
       "label": "Couleur PV total",
