@@ -99,6 +99,7 @@ background_image: /local/community/lumina-energy-card/lumina_background.jpg
 | --- | --- | --- | --- |
 | `card_title` | string | `LUMINA ENERGY` | Optional header text |
 | `background_image` | string | `/local/community/lumina-energy-card/lumina_background.jpg` | Background asset path |
+| `background_image_heat_pump` | string | `/local/community/lumina-energy-card/lumina-energy-card-hp.png` | Alternate background that loads automatically when a heat pump sensor is configured |
 | `language` | string | `en` | Accepts `en`, `it`, or `de` |
 | `display_unit` | string | `kW` | Display values in `W` or `kW` |
 | `update_interval` | number | `30` | Refresh cadence (0–60, step 5; 0 disables throttling) |
@@ -110,6 +111,7 @@ background_image: /local/community/lumina-energy-card/lumina_background.jpg
 | `battery_power_font_size` | number | `14` | Typography for battery power (10–28 px) |
 | `load_font_size` | number | `15` | Typography for load label (10–28 px) |
 | `grid_font_size` | number | `15` | Typography for grid label (10–28 px) |
+| `heat_pump_font_size` | number | `16` | Typography for the heat pump power readout (10–28 px) |
 | `car_power_font_size` | number | `15` | Typography for EV power (10–28 px) |
 | `car_soc_font_size` | number | `12` | Typography for EV SOC (8–24 px) |
 | `daily_label_font_size` | number | `12` | Typography for the daily label (8–24 px) |
@@ -124,6 +126,7 @@ background_image: /local/community/lumina-energy-card/lumina_background.jpg
 | `sensor_grid_power` | entity | — | Grid import/export sensor (required) |
 | `sensor_grid_import` | entity | — | Optional import-only sensor (positive values) |
 | `sensor_grid_export` | entity | — | Optional export-only sensor (positive values) |
+| `sensor_heat_pump_consumption` | entity | — | Optional heat pump consumption sensor that unlocks the heat pump flow/text |
 | `pv_primary_color` | string | `#0080ff` | PV 1 flow animation colour |
 | `pv_secondary_color` | string | `#80ffff` | PV 2 flow animation colour |
 | `load_flow_color` | string | `#0080ff` | Home load flow animation colour |
@@ -135,7 +138,10 @@ background_image: /local/community/lumina-energy-card/lumina_background.jpg
 | `battery_discharge_color` | string | `#FFFFFF` | Battery discharge flow colour (white) |
 | `grid_import_color` | string | `#FF3333` | Grid import flow colour (red) |
 | `grid_export_color` | string | `#00ff00` | Grid export flow colour (green) |
+| `grid_flow_mode` | string | `grid_to_inverter` | Select `grid_to_inverter` (default single path) or `grid_to_house_inverter` to highlight the grid→house/inverter split |
 | `car_flow_color` | string | `#00FFFF` | EV flow animation colour (cyan) |
+| `heat_pump_flow_color` | string | `#FFA500` | Flow colour for the dedicated heat pump conduit |
+| `heat_pump_text_color` | string | `#FFA500` | Text colour for the heat pump wattage label |
 | `battery_fill_high_color` | string | `#00ffff` | Battery liquid fill colour when SOC is above low threshold (cyan) |
 | `battery_fill_low_color` | string | `#ff0000` | Battery liquid fill colour when SOC is at or below low threshold (red) |
 | `battery_fill_low_threshold` | number | `25` | SOC percentage where the battery liquid switches to the low colour |
@@ -164,6 +170,34 @@ background_image: /local/community/lumina-energy-card/lumina_background.jpg
 | `inv2_color` | string | `#80ffff` | Colour applied to INV 2 label/flow |
 | `car_name_font_size` | number | `15` | Font size for Car name label (px) |
 | `car2_name_font_size` | number | `15` | Font size for Car 2 name label (px) |
+
+### Heat Pump Overlay (EN)
+
+Set `sensor_heat_pump_consumption` to expose the dedicated heat pump conduit. When the sensor exists the card auto-loads `background_image_heat_pump`, renders the live reading next to the house, and animates the orange SVG path. Tune the visuals with `heat_pump_flow_color`, `heat_pump_text_color`, and `heat_pump_font_size`.
+
+Example snippet:
+
+```yaml
+type: custom:lumina-energy-card
+sensor_heat_pump_consumption: sensor.heat_pump_power
+background_image_heat_pump: /local/community/lumina-energy-card/lumina-energy-card-hp.png
+heat_pump_flow_color: '#FFAA33'
+heat_pump_text_color: '#FFE1B2'
+```
+
+### Grid Flow Modes (EN)
+
+Choose how imports are sketched with `grid_flow_mode`:
+
+- `grid_to_inverter` (default) renders a single grid path into the inverter block.
+- `grid_to_house_inverter` splits the animation into two strokes (grid→house and house→inverter) so you can emphasise imports that feed the home directly before passing through the hybrid inverter.
+
+```yaml
+type: custom:lumina-energy-card
+sensor_grid_power: sensor.grid_net_power
+grid_flow_mode: grid_to_house_inverter
+grid_activity_threshold: 50
+```
 
 ### Popups (Editor Options)
 
