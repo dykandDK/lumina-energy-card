@@ -1113,6 +1113,26 @@ class LuminaEnergyCard extends HTMLElement {
       config.sensor_popup_pv_6_name && config.sensor_popup_pv_6_name.trim() ? config.sensor_popup_pv_6_name.trim() : this.getEntityName(config.sensor_popup_pv_6)
     ];
 
+    // House Popup
+    const popupHouseValues = [
+      config.sensor_popup_house_1 ? this.getStateSafe(config.sensor_popup_house_1) : null,
+      config.sensor_popup_house_2 ? this.getStateSafe(config.sensor_popup_house_2) : null,
+      config.sensor_popup_house_3 ? this.getStateSafe(config.sensor_popup_house_3) : null,
+      config.sensor_popup_house_4 ? this.getStateSafe(config.sensor_popup_house_4) : null,
+      config.sensor_popup_house_5 ? this.getStateSafe(config.sensor_popup_house_5) : null,
+      config.sensor_popup_house_6 ? this.getStateSafe(config.sensor_popup_house_6) : null
+    ];
+
+    // House Popup names
+    const popupHouseNames = [
+      config.sensor_popup_house_1_name && config.sensor_popup_house_1_name.trim() ? config.sensor_popup_house_1_name.trim() : this.getEntityName(config.sensor_popup_house_1),
+      config.sensor_popup_house_2_name && config.sensor_popup_house_2_name.trim() ? config.sensor_popup_house_2_name.trim() : this.getEntityName(config.sensor_popup_house_2),
+      config.sensor_popup_house_3_name && config.sensor_popup_house_3_name.trim() ? config.sensor_popup_house_3_name.trim() : this.getEntityName(config.sensor_popup_house_3),
+      config.sensor_popup_house_4_name && config.sensor_popup_house_4_name.trim() ? config.sensor_popup_house_4_name.trim() : this.getEntityName(config.sensor_popup_house_4),
+      config.sensor_popup_house_5_name && config.sensor_popup_house_5_name.trim() ? config.sensor_popup_house_5_name.trim() : this.getEntityName(config.sensor_popup_house_5),
+      config.sensor_popup_house_6_name && config.sensor_popup_house_6_name.trim() ? config.sensor_popup_house_6_name.trim() : this.getEntityName(config.sensor_popup_house_6)
+    ];
+
     // Display settings
     const bg_img = config.background_image || '/local/community/lumina-energy-card/lumina_background.jpg';
     const title_text = (typeof config.card_title === 'string' && config.card_title.trim()) ? config.card_title.trim() : null;
@@ -1577,12 +1597,24 @@ class LuminaEnergyCard extends HTMLElement {
 
           <g data-role="pv-popup" style="display:none; cursor:pointer;">
             <rect x="300" y="200" width="200" height="120" rx="10" ry="10" class="alive-box" />
-            <text data-role="pv-popup-line-0" x="400" y="225" fill="#FFFFFF" font-size="11" font-family="sans-serif" text-anchor="middle" style="display:none;"></text>
-            <text data-role="pv-popup-line-1" x="400" y="240" fill="#FFFFFF" font-size="11" font-family="sans-serif" text-anchor="middle" style="display:none;"></text>
-            <text data-role="pv-popup-line-2" x="400" y="255" fill="#FFFFFF" font-size="11" font-family="sans-serif" text-anchor="middle" style="display:none;"></text>
-            <text data-role="pv-popup-line-3" x="400" y="270" fill="#FFFFFF" font-size="11" font-family="sans-serif" text-anchor="middle" style="display:none;"></text>
-            <text data-role="pv-popup-line-4" x="400" y="285" fill="#FFFFFF" font-size="11" font-family="sans-serif" text-anchor="middle" style="display:none;"></text>
-            <text data-role="pv-popup-line-5" x="400" y="300" fill="#FFFFFF" font-size="11" font-family="sans-serif" text-anchor="middle" style="display:none;"></text>
+            <text data-role="pv-popup-line-0" x="400" y="225" fill="#FFFFFF" font-size="16" font-family="sans-serif" text-anchor="middle" style="display:none;"></text>
+            <text data-role="pv-popup-line-1" x="400" y="240" fill="#FFFFFF" font-size="16" font-family="sans-serif" text-anchor="middle" style="display:none;"></text>
+            <text data-role="pv-popup-line-2" x="400" y="255" fill="#FFFFFF" font-size="16" font-family="sans-serif" text-anchor="middle" style="display:none;"></text>
+            <text data-role="pv-popup-line-3" x="400" y="270" fill="#FFFFFF" font-size="16" font-family="sans-serif" text-anchor="middle" style="display:none;"></text>
+            <text data-role="pv-popup-line-4" x="400" y="285" fill="#FFFFFF" font-size="16" font-family="sans-serif" text-anchor="middle" style="display:none;"></text>
+            <text data-role="pv-popup-line-5" x="400" y="300" fill="#FFFFFF" font-size="16" font-family="sans-serif" text-anchor="middle" style="display:none;"></text>
+          </g>
+
+          <polygon data-role="house-clickable-area" points="300,200 300,150 350,100 450,75 500,150 500,200 395,250" fill="transparent" style="cursor:pointer;" />
+
+          <g data-role="house-popup" style="display:none; cursor:pointer;">
+            <rect x="300" y="200" width="200" height="120" rx="10" ry="10" class="alive-box" />
+            <text data-role="house-popup-line-0" x="400" y="225" fill="#FFFFFF" font-size="16" font-family="sans-serif" text-anchor="middle" style="display:none;"></text>
+            <text data-role="house-popup-line-1" x="400" y="240" fill="#FFFFFF" font-size="16" font-family="sans-serif" text-anchor="middle" style="display:none;"></text>
+            <text data-role="house-popup-line-2" x="400" y="255" fill="#FFFFFF" font-size="16" font-family="sans-serif" text-anchor="middle" style="display:none;"></text>
+            <text data-role="house-popup-line-3" x="400" y="270" fill="#FFFFFF" font-size="16" font-family="sans-serif" text-anchor="middle" style="display:none;"></text>
+            <text data-role="house-popup-line-4" x="400" y="285" fill="#FFFFFF" font-size="16" font-family="sans-serif" text-anchor="middle" style="display:none;"></text>
+            <text data-role="house-popup-line-5" x="400" y="300" fill="#FFFFFF" font-size="16" font-family="sans-serif" text-anchor="middle" style="display:none;"></text>
           </g>
 
         </svg>
@@ -1622,6 +1654,9 @@ class LuminaEnergyCard extends HTMLElement {
       car2Soc: root.querySelector('[data-role="car2-soc"]'),
       pvPopup: root.querySelector('[data-role="pv-popup"]'),
       pvPopupLines: Array.from({ length: 6 }, (_, index) => root.querySelector(`[data-role="pv-popup-line-${index}"]`)),
+      housePopup: root.querySelector('[data-role="house-popup"]'),
+      housePopupLines: Array.from({ length: 6 }, (_, index) => root.querySelector(`[data-role="house-popup-line-${index}"]`)),
+      houseClickableArea: root.querySelector('[data-role="house-clickable-area"]'),
 
       flows: {
         pv1: root.querySelector('[data-flow-key="pv1"]'),
@@ -1680,6 +1715,7 @@ class LuminaEnergyCard extends HTMLElement {
     if (isVisible) {
       this._hidePvPopup();
     } else {
+      this._hideHousePopup(); // Hide house popup if open
       this._showPvPopup();
     }
   }
@@ -1719,7 +1755,7 @@ class LuminaEnergyCard extends HTMLElement {
     // Find the maximum font size used in the popup for width calculation
     const maxFontSize = Math.max(...lines.map((_, index) => {
       const fontSizeKey = `sensor_popup_pv_${index + 1}_font_size`;
-      return config[fontSizeKey] || 11;
+      return config[fontSizeKey] || 16;
     }));
     
     // More accurate width calculation: account for font size and variable character widths
@@ -1758,7 +1794,7 @@ class LuminaEnergyCard extends HTMLElement {
         
         // Apply font size
         const fontSizeKey = `sensor_popup_pv_${index + 1}_font_size`;
-        const fontSize = config[fontSizeKey] || 11;
+        const fontSize = config[fontSizeKey] || 16;
         element.setAttribute('font-size', fontSize);
         
         // Apply color
@@ -1786,6 +1822,137 @@ class LuminaEnergyCard extends HTMLElement {
   async _hidePvPopup() {
     if (!this._domRefs || !this._domRefs.pvPopup) return;
     const popup = this._domRefs.pvPopup;
+    const gsap = await this._ensureGsap();
+    if (gsap) {
+      gsap.to(popup, { opacity: 0, scale: 0.8, duration: 0.2, ease: 'power2.in', onComplete: () => {
+        popup.style.display = 'none';
+      }});
+    } else {
+      popup.style.display = 'none';
+    }
+  }
+
+  _toggleHousePopup() {
+    if (!this._domRefs || !this._domRefs.housePopup) return;
+    
+    // Check if popup has any content by checking if any house entities are configured
+    const config = this._config || this.config || {};
+    if (!config) return;
+    const hasContent = (config.sensor_popup_house_1 && config.sensor_popup_house_1.trim()) || 
+                      (config.sensor_popup_house_2 && config.sensor_popup_house_2.trim()) || 
+                      (config.sensor_popup_house_3 && config.sensor_popup_house_3.trim()) || 
+                      (config.sensor_popup_house_4 && config.sensor_popup_house_4.trim()) || 
+                      (config.sensor_popup_house_5 && config.sensor_popup_house_5.trim()) || 
+                      (config.sensor_popup_house_6 && config.sensor_popup_house_6.trim());
+    if (!hasContent) return;
+    
+    const popup = this._domRefs.housePopup;
+    const isVisible = popup.style.display !== 'none';
+    if (isVisible) {
+      this._hideHousePopup();
+    } else {
+      this._hidePvPopup(); // Hide PV popup if open
+      this._showHousePopup();
+    }
+  }
+
+  async _showHousePopup() {
+    if (!this._domRefs || !this._domRefs.housePopup) return;
+    const popup = this._domRefs.housePopup;
+    
+    // Get house popup data
+    const config = this._config || this.config || {};
+    if (!config) return;
+    const popupHouseValues = [
+      config.sensor_popup_house_1 ? this.getStateSafe(config.sensor_popup_house_1) : null,
+      config.sensor_popup_house_2 ? this.getStateSafe(config.sensor_popup_house_2) : null,
+      config.sensor_popup_house_3 ? this.getStateSafe(config.sensor_popup_house_3) : null,
+      config.sensor_popup_house_4 ? this.getStateSafe(config.sensor_popup_house_4) : null,
+      config.sensor_popup_house_5 ? this.getStateSafe(config.sensor_popup_house_5) : null,
+      config.sensor_popup_house_6 ? this.getStateSafe(config.sensor_popup_house_6) : null
+    ];
+    
+    const popupHouseNames = [
+      config.sensor_popup_house_1_name && config.sensor_popup_house_1_name.trim() ? config.sensor_popup_house_1_name.trim() : this.getEntityName(config.sensor_popup_house_1),
+      config.sensor_popup_house_2_name && config.sensor_popup_house_2_name.trim() ? config.sensor_popup_house_2_name.trim() : this.getEntityName(config.sensor_popup_house_2),
+      config.sensor_popup_house_3_name && config.sensor_popup_house_3_name.trim() ? config.sensor_popup_house_3_name.trim() : this.getEntityName(config.sensor_popup_house_3),
+      config.sensor_popup_house_4_name && config.sensor_popup_house_4_name.trim() ? config.sensor_popup_house_4_name.trim() : this.getEntityName(config.sensor_popup_house_4),
+      config.sensor_popup_house_5_name && config.sensor_popup_house_5_name.trim() ? config.sensor_popup_house_5_name.trim() : this.getEntityName(config.sensor_popup_house_5),
+      config.sensor_popup_house_6_name && config.sensor_popup_house_6_name.trim() ? config.sensor_popup_house_6_name.trim() : this.getEntityName(config.sensor_popup_house_6)
+    ];
+    
+    const use_kw = config.display_unit === 'kW';
+    const lines = popupHouseValues.map((v, i) => v !== null ? `${popupHouseNames[i]}: ${this.formatPower(v, use_kw)}` : '').filter(line => line);
+    if (!lines.length) return;
+    
+    // Calculate popup dimensions based on content
+    const maxLineLength = Math.max(...lines.map(line => line.length));
+    
+    // Find the maximum font size used in the popup for width calculation
+    const maxFontSize = Math.max(...lines.map((_, index) => {
+      const fontSizeKey = `sensor_popup_house_${index + 1}_font_size`;
+      return config[fontSizeKey] || 16;
+    }));
+    
+    // More accurate width calculation: account for font size and variable character widths
+    // Average character width is roughly 0.6 * font-size for most fonts
+    const estimatedCharWidth = maxFontSize * 0.6;
+    const popupWidth = Math.max(200, Math.min(500, maxLineLength * estimatedCharWidth + 40)); // Reduced padding for tighter fit
+    const popupHeight = 25 + lines.length * 15; // Reduced height since header removed
+    const popupX = (800 - popupWidth) / 2; // Center horizontally
+    const popupY = (450 - popupHeight) / 2; // Center vertically
+    
+    // Update popup rectangle
+    const rect = popup.querySelector('rect');
+    if (rect) {
+      rect.setAttribute('x', popupX);
+      rect.setAttribute('y', popupY);
+      rect.setAttribute('width', popupWidth);
+      rect.setAttribute('height', popupHeight);
+    }
+    
+    // Update text positions
+    const lineElements = this._domRefs.housePopupLines || [];
+    lines.forEach((line, index) => {
+      const element = lineElements[index];
+      if (element && line) {
+        element.setAttribute('x', popupX + popupWidth / 2);
+        element.setAttribute('y', popupY + 25 + index * 15);
+        element.textContent = line;
+        element.style.display = 'inline';
+        
+        // Apply font size
+        const fontSizeKey = `sensor_popup_house_${index + 1}_font_size`;
+        const fontSize = config[fontSizeKey] || 16;
+        element.setAttribute('font-size', fontSize);
+        
+        // Apply color
+        const colorKey = `sensor_popup_house_${index + 1}_color`;
+        const color = config[colorKey] || '#80ffff';
+        element.setAttribute('fill', color);
+      } else if (element) {
+        element.style.display = 'none';
+      }
+    });
+    
+    // Hide unused lines
+    for (let i = lines.length; i < lineElements.length; i++) {
+      const element = lineElements[i];
+      if (element) {
+        element.style.display = 'none';
+      }
+    }
+    
+    popup.style.display = 'inline';
+    const gsap = await this._ensureGsap();
+    if (gsap) {
+      gsap.fromTo(popup, { opacity: 0, scale: 0.8 }, { opacity: 1, scale: 1, duration: 0.3, ease: 'back.out(1.7)' });
+    }
+  }
+
+  async _hideHousePopup() {
+    if (!this._domRefs || !this._domRefs.housePopup) return;
+    const popup = this._domRefs.housePopup;
     const gsap = await this._ensureGsap();
     if (gsap) {
       gsap.to(popup, { opacity: 0, scale: 0.8, duration: 0.2, ease: 'power2.in', onComplete: () => {
@@ -2152,6 +2319,7 @@ class LuminaEnergyCard extends HTMLElement {
     }
 
     // Re-attach event listeners after DOM updates
+    this._cacheDomReferences(); // Re-cache refs in case DOM was updated
     this._attachEventListeners();
   }
 
@@ -2169,10 +2337,24 @@ class LuminaEnergyCard extends HTMLElement {
       });
     }
 
+    // Attach click listener to house clickable area for house popup
+    if (this._domRefs.houseClickableArea) {
+      this._domRefs.houseClickableArea.addEventListener('click', () => {
+        this._toggleHousePopup();
+      });
+    }
+
     // Attach click listener to popup for closing
     if (this._domRefs.pvPopup) {
       this._domRefs.pvPopup.addEventListener('click', () => {
         this._hidePvPopup();
+      });
+    }
+
+    // Attach click listener to house popup for closing
+    if (this._domRefs.housePopup) {
+      this._domRefs.housePopup.addEventListener('click', () => {
+        this._hideHousePopup();
       });
     }
   }
@@ -2241,6 +2423,7 @@ class LuminaEnergyCardEditor extends HTMLElement {
           general: { title: 'General Settings', helper: 'Card metadata, background, language, and update cadence.' },
           entities: { title: 'Entity Selection', helper: 'Choose the PV, battery, grid, load, and EV entities used by the card. Either the PV total sensor or your PV string arrays need to be specified as a minimum.' },
           pvPopup: { title: 'PV Popup', helper: 'Configure entities for the PV popup display.' },
+          housePopup: { title: 'House Popup', helper: 'Configure entities for the house popup display.' },
           colors: { title: 'Color & Thresholds', helper: 'Configure grid thresholds and accent colours for flows and EV display.' },
           typography: { title: 'Typography', helper: 'Fine tune the font sizes used across the card.' },
           about: { title: 'About', helper: 'Credits, version, and helpful links.' }
@@ -2339,7 +2522,7 @@ class LuminaEnergyCardEditor extends HTMLElement {
           daily_value_font_size: { label: 'Daily Value Font Size (px)', helper: 'Default 20' },
           pv_font_size: { label: 'PV Text Font Size (px)', helper: 'Default 16' },
           battery_soc_font_size: { label: 'Battery SOC Font Size (px)', helper: 'Default 20' },
-          battery_power_font_size: { label: 'Battery Power Font Size (px)', helper: 'Default 14' },
+          battery_power_font_size: { label: 'Battery Power Font Size (px)', helper: 'Default 16' },
           load_font_size: { label: 'Load Font Size (px)', helper: 'Default 15' },
           grid_font_size: { label: 'Grid Font Size (px)', helper: 'Default 15' },
           car_power_font_size: { label: 'Car Power Font Size (px)', helper: 'Default 15' },
@@ -2366,12 +2549,36 @@ class LuminaEnergyCardEditor extends HTMLElement {
           sensor_popup_pv_4_color: { label: 'PV Popup 4 Color', helper: 'Color for PV popup line 4 text.' },
           sensor_popup_pv_5_color: { label: 'PV Popup 5 Color', helper: 'Color for PV popup line 5 text.' },
           sensor_popup_pv_6_color: { label: 'PV Popup 6 Color', helper: 'Color for PV popup line 6 text.' },
-          sensor_popup_pv_1_font_size: { label: 'PV Popup 1 Font Size (px)', helper: 'Font size for PV popup line 1. Default 14' },
-          sensor_popup_pv_2_font_size: { label: 'PV Popup 2 Font Size (px)', helper: 'Font size for PV popup line 2. Default 14' },
-          sensor_popup_pv_3_font_size: { label: 'PV Popup 3 Font Size (px)', helper: 'Font size for PV popup line 3. Default 14' },
-          sensor_popup_pv_4_font_size: { label: 'PV Popup 4 Font Size (px)', helper: 'Font size for PV popup line 4. Default 14' },
-          sensor_popup_pv_5_font_size: { label: 'PV Popup 5 Font Size (px)', helper: 'Font size for PV popup line 5. Default 14' },
-          sensor_popup_pv_6_font_size: { label: 'PV Popup 6 Font Size (px)', helper: 'Font size for PV popup line 6. Default 14' }
+          sensor_popup_pv_1_font_size: { label: 'PV Popup 1 Font Size (px)', helper: 'Font size for PV popup line 1. Default 16' },
+          sensor_popup_pv_2_font_size: { label: 'PV Popup 2 Font Size (px)', helper: 'Font size for PV popup line 2. Default 16' },
+          sensor_popup_pv_3_font_size: { label: 'PV Popup 3 Font Size (px)', helper: 'Font size for PV popup line 3. Default 16' },
+          sensor_popup_pv_4_font_size: { label: 'PV Popup 4 Font Size (px)', helper: 'Font size for PV popup line 4. Default 16' },
+          sensor_popup_pv_5_font_size: { label: 'PV Popup 5 Font Size (px)', helper: 'Font size for PV popup line 5. Default 16' },
+          sensor_popup_pv_6_font_size: { label: 'PV Popup 6 Font Size (px)', helper: 'Font size for PV popup line 6. Default 16' },
+          sensor_popup_house_1: { label: 'House Popup 1', helper: 'Entity for house popup line 1.' },
+          sensor_popup_house_1_name: { label: 'House Popup 1 Name', helper: 'Optional custom name for house popup line 1. Leave blank to use entity name.' },
+          sensor_popup_house_1_color: { label: 'House Popup 1 Color', helper: 'Color for house popup line 1 text.' },
+          sensor_popup_house_1_font_size: { label: 'House Popup 1 Font Size (px)', helper: 'Font size for house popup line 1. Default 16' },
+          sensor_popup_house_2: { label: 'House Popup 2', helper: 'Entity for house popup line 2.' },
+          sensor_popup_house_2_name: { label: 'House Popup 2 Name', helper: 'Optional custom name for house popup line 2. Leave blank to use entity name.' },
+          sensor_popup_house_2_color: { label: 'House Popup 2 Color', helper: 'Color for house popup line 2 text.' },
+          sensor_popup_house_2_font_size: { label: 'House Popup 2 Font Size (px)', helper: 'Font size for house popup line 2. Default 16' },
+          sensor_popup_house_3: { label: 'House Popup 3', helper: 'Entity for house popup line 3.' },
+          sensor_popup_house_3_name: { label: 'House Popup 3 Name', helper: 'Optional custom name for house popup line 3. Leave blank to use entity name.' },
+          sensor_popup_house_3_color: { label: 'House Popup 3 Color', helper: 'Color for house popup line 3 text.' },
+          sensor_popup_house_3_font_size: { label: 'House Popup 3 Font Size (px)', helper: 'Font size for house popup line 3. Default 16' },
+          sensor_popup_house_4: { label: 'House Popup 4', helper: 'Entity for house popup line 4.' },
+          sensor_popup_house_4_name: { label: 'House Popup 4 Name', helper: 'Optional custom name for house popup line 4. Leave blank to use entity name.' },
+          sensor_popup_house_4_color: { label: 'House Popup 4 Color', helper: 'Color for house popup line 4 text.' },
+          sensor_popup_house_4_font_size: { label: 'House Popup 4 Font Size (px)', helper: 'Font size for house popup line 4. Default 16' },
+          sensor_popup_house_5: { label: 'House Popup 5', helper: 'Entity for house popup line 5.' },
+          sensor_popup_house_5_name: { label: 'House Popup 5 Name', helper: 'Optional custom name for house popup line 5. Leave blank to use entity name.' },
+          sensor_popup_house_5_color: { label: 'House Popup 5 Color', helper: 'Color for house popup line 5 text.' },
+          sensor_popup_house_5_font_size: { label: 'House Popup 5 Font Size (px)', helper: 'Font size for house popup line 5. Default 16' },
+          sensor_popup_house_6: { label: 'House Popup 6', helper: 'Entity for house popup line 6.' },
+          sensor_popup_house_6_name: { label: 'House Popup 6 Name', helper: 'Optional custom name for house popup line 6. Leave blank to use entity name.' },
+          sensor_popup_house_6_color: { label: 'House Popup 6 Color', helper: 'Color for house popup line 6 text.' },
+          sensor_popup_house_6_font_size: { label: 'House Popup 6 Font Size (px)', helper: 'Font size for house popup line 6. Default 16' }
         },
         options: {
           languages: [
@@ -2406,6 +2613,7 @@ class LuminaEnergyCardEditor extends HTMLElement {
           general: { title: 'Impostazioni generali', helper: 'Titolo scheda, sfondo, lingua e frequenza di aggiornamento.' },
           entities: { title: 'Selezione entita', helper: 'Scegli le entita PV, batteria, rete, carico ed EV utilizzate dalla scheda. Come minimo deve essere specificato il sensore PV totale oppure gli array di stringhe PV.' },
           pvPopup: { title: 'PV Popup', helper: 'Configura le entita per la visualizzazione del popup PV.' },
+          housePopup: { title: 'House Popup', helper: 'Configura le entita per la visualizzazione del popup casa.' },
           colors: { title: 'Colori e soglie', helper: 'Configura soglie della rete e colori di accento per i flussi.' },
           typography: { title: 'Tipografia', helper: 'Regola le dimensioni dei caratteri utilizzate nella scheda.' },
           about: { title: 'Informazioni', helper: 'Crediti, versione e link utili.' }
@@ -2497,7 +2705,7 @@ class LuminaEnergyCardEditor extends HTMLElement {
           daily_value_font_size: { label: 'Dimensione valore giornaliero (px)', helper: 'Predefinita 20' },
           pv_font_size: { label: 'Dimensione testo PV (px)', helper: 'Predefinita 16' },
           battery_soc_font_size: { label: 'Dimensione SOC batteria (px)', helper: 'Predefinita 20' },
-          battery_power_font_size: { label: 'Dimensione potenza batteria (px)', helper: 'Predefinita 14' },
+          battery_power_font_size: { label: 'Dimensione potenza batteria (px)', helper: 'Predefinita 16' },
           load_font_size: { label: 'Dimensione carico (px)', helper: 'Predefinita 15' },
           grid_font_size: { label: 'Dimensione rete (px)', helper: 'Predefinita 15' },
           car_power_font_size: { label: 'Dimensione potenza auto (px)', helper: 'Predefinita 15' },
@@ -2524,12 +2732,36 @@ class LuminaEnergyCardEditor extends HTMLElement {
           sensor_popup_pv_4_color: { label: 'Colore PV Popup 4', helper: 'Colore per il testo della riga 4 del popup PV.' },
           sensor_popup_pv_5_color: { label: 'Colore PV Popup 5', helper: 'Colore per il testo della riga 5 del popup PV.' },
           sensor_popup_pv_6_color: { label: 'Colore PV Popup 6', helper: 'Colore per il testo della riga 6 del popup PV.' },
-          sensor_popup_pv_1_font_size: { label: 'Dimensione carattere PV Popup 1 (px)', helper: 'Dimensione carattere per la riga 1 del popup PV. Predefinita 14' },
-          sensor_popup_pv_2_font_size: { label: 'Dimensione carattere PV Popup 2 (px)', helper: 'Dimensione carattere per la riga 2 del popup PV. Predefinita 14' },
-          sensor_popup_pv_3_font_size: { label: 'Dimensione carattere PV Popup 3 (px)', helper: 'Dimensione carattere per la riga 3 del popup PV. Predefinita 14' },
-          sensor_popup_pv_4_font_size: { label: 'Dimensione carattere PV Popup 4 (px)', helper: 'Dimensione carattere per la riga 4 del popup PV. Predefinita 14' },
-          sensor_popup_pv_5_font_size: { label: 'Dimensione carattere PV Popup 5 (px)', helper: 'Dimensione carattere per la riga 5 del popup PV. Predefinita 14' },
-          sensor_popup_pv_6_font_size: { label: 'Dimensione carattere PV Popup 6 (px)', helper: 'Dimensione carattere per la riga 6 del popup PV. Predefinita 14' }
+          sensor_popup_pv_1_font_size: { label: 'Dimensione carattere PV Popup 1 (px)', helper: 'Dimensione carattere per la riga 1 del popup PV. Predefinita 16' },
+          sensor_popup_pv_2_font_size: { label: 'Dimensione carattere PV Popup 2 (px)', helper: 'Dimensione carattere per la riga 2 del popup PV. Predefinita 16' },
+          sensor_popup_pv_3_font_size: { label: 'Dimensione carattere PV Popup 3 (px)', helper: 'Dimensione carattere per la riga 3 del popup PV. Predefinita 16' },
+          sensor_popup_pv_4_font_size: { label: 'Dimensione carattere PV Popup 4 (px)', helper: 'Dimensione carattere per la riga 4 del popup PV. Predefinita 16' },
+          sensor_popup_pv_5_font_size: { label: 'Dimensione carattere PV Popup 5 (px)', helper: 'Dimensione carattere per la riga 5 del popup PV. Predefinita 16' },
+          sensor_popup_pv_6_font_size: { label: 'Dimensione carattere PV Popup 6 (px)', helper: 'Dimensione carattere per la riga 6 del popup PV. Predefinita 16' },
+          sensor_popup_house_1: { label: 'House Popup 1', helper: 'Entita per la riga 1 del popup casa.' },
+          sensor_popup_house_1_name: { label: 'Nome House Popup 1', helper: 'Nome personalizzato opzionale per la riga 1 del popup casa. Lasciare vuoto per usare il nome entità.' },
+          sensor_popup_house_1_color: { label: 'Colore House Popup 1', helper: 'Colore per il testo della riga 1 del popup casa.' },
+          sensor_popup_house_1_font_size: { label: 'Dimensione carattere House Popup 1 (px)', helper: 'Dimensione carattere per la riga 1 del popup casa. Predefinita 16' },
+          sensor_popup_house_2: { label: 'House Popup 2', helper: 'Entita per la riga 2 del popup casa.' },
+          sensor_popup_house_2_name: { label: 'Nome House Popup 2', helper: 'Nome personalizzato opzionale per la riga 2 del popup casa. Lasciare vuoto per usare il nome entità.' },
+          sensor_popup_house_2_color: { label: 'Colore House Popup 2', helper: 'Colore per il testo della riga 2 del popup casa.' },
+          sensor_popup_house_2_font_size: { label: 'Dimensione carattere House Popup 2 (px)', helper: 'Dimensione carattere per la riga 2 del popup casa. Predefinita 16' },
+          sensor_popup_house_3: { label: 'House Popup 3', helper: 'Entita per la riga 3 del popup casa.' },
+          sensor_popup_house_3_name: { label: 'Nome House Popup 3', helper: 'Nome personalizzato opzionale per la riga 3 del popup casa. Lasciare vuoto per usare il nome entità.' },
+          sensor_popup_house_3_color: { label: 'Colore House Popup 3', helper: 'Colore per il testo della riga 3 del popup casa.' },
+          sensor_popup_house_3_font_size: { label: 'Dimensione carattere House Popup 3 (px)', helper: 'Dimensione carattere per la riga 3 del popup casa. Predefinita 16' },
+          sensor_popup_house_4: { label: 'House Popup 4', helper: 'Entita per la riga 4 del popup casa.' },
+          sensor_popup_house_4_name: { label: 'Nome House Popup 4', helper: 'Nome personalizzato opzionale per la riga 4 del popup casa. Lasciare vuoto per usare il nome entità.' },
+          sensor_popup_house_4_color: { label: 'Colore House Popup 4', helper: 'Colore per il testo della riga 4 del popup casa.' },
+          sensor_popup_house_4_font_size: { label: 'Dimensione carattere House Popup 4 (px)', helper: 'Dimensione carattere per la riga 4 del popup casa. Predefinita 16' },
+          sensor_popup_house_5: { label: 'House Popup 5', helper: 'Entita per la riga 5 del popup casa.' },
+          sensor_popup_house_5_name: { label: 'Nome House Popup 5', helper: 'Nome personalizzato opzionale per la riga 5 del popup casa. Lasciare vuoto per usare il nome entità.' },
+          sensor_popup_house_5_color: { label: 'Colore House Popup 5', helper: 'Colore per il testo della riga 5 del popup casa.' },
+          sensor_popup_house_5_font_size: { label: 'Dimensione carattere House Popup 5 (px)', helper: 'Dimensione carattere per la riga 5 del popup casa. Predefinita 16' },
+          sensor_popup_house_6: { label: 'House Popup 6', helper: 'Entita per la riga 6 del popup casa.' },
+          sensor_popup_house_6_name: { label: 'Nome House Popup 6', helper: 'Nome personalizzato opzionale per la riga 6 del popup casa. Lasciare vuoto per usare il nome entità.' },
+          sensor_popup_house_6_color: { label: 'Colore House Popup 6', helper: 'Colore per il testo della riga 6 del popup casa.' },
+          sensor_popup_house_6_font_size: { label: 'Dimensione carattere House Popup 6 (px)', helper: 'Dimensione carattere per la riga 6 del popup casa. Predefinita 16' }
         },
         options: {
           languages: [
@@ -2564,6 +2796,7 @@ class LuminaEnergyCardEditor extends HTMLElement {
           general: { title: 'Allgemeine Einstellungen', helper: 'Kartentitel, Hintergrund, Sprache und Aktualisierungsintervall.' },
           entities: { title: 'Entitaetenauswahl', helper: 'PV-, Batterie-, Netz-, Verbrauchs- und optionale EV-Entitaeten waehlen. Entweder der PV-Gesamt-Sensor oder Ihre PV-String-Arrays muessen mindestens angegeben werden.' },
           pvPopup: { title: 'PV Popup', helper: 'Entitaeten fuer die PV-Popup-Anzeige konfigurieren.' },
+          housePopup: { title: 'House Popup', helper: 'Entitaeten fuer die House-Popup-Anzeige konfigurieren.' },
           colors: { title: 'Farben & Schwellwerte', helper: 'Grenzwerte und Farben fuer Netz- und EV-Anzeige einstellen.' },
           typography: { title: 'Typografie', helper: 'Schriftgroessen der Karte feinjustieren.' },
           about: { title: 'Info', helper: 'Credits, Version und nuetzliche Links.' }
@@ -2655,7 +2888,7 @@ class LuminaEnergyCardEditor extends HTMLElement {
           daily_value_font_size: { label: 'Schriftgroesse Tageswert (px)', helper: 'Standard 20' },
           pv_font_size: { label: 'Schriftgroesse PV Text (px)', helper: 'Standard 16' },
           battery_soc_font_size: { label: 'Schriftgroesse Batterie SOC (px)', helper: 'Standard 20' },
-          battery_power_font_size: { label: 'Schriftgroesse Batterie Leistung (px)', helper: 'Standard 14' },
+          battery_power_font_size: { label: 'Schriftgroesse Batterie Leistung (px)', helper: 'Standard 16' },
           load_font_size: { label: 'Schriftgroesse Last (px)', helper: 'Standard 15' },
           grid_font_size: { label: 'Schriftgroesse Netz (px)', helper: 'Standard 15' },
           car_power_font_size: { label: 'Schriftgroesse Fahrzeugleistung (px)', helper: 'Standard 15' },
@@ -2678,12 +2911,36 @@ class LuminaEnergyCardEditor extends HTMLElement {
           sensor_popup_pv_4_color: { label: 'Farbe PV Popup 4', helper: 'Farbe fuer PV Popup Zeile 4 Text.' },
           sensor_popup_pv_5_color: { label: 'Farbe PV Popup 5', helper: 'Farbe fuer PV Popup Zeile 5 Text.' },
           sensor_popup_pv_6_color: { label: 'Farbe PV Popup 6', helper: 'Farbe fuer PV Popup Zeile 6 Text.' },
-          sensor_popup_pv_1_font_size: { label: 'Schriftgroesse PV Popup 1 (px)', helper: 'Schriftgroesse fuer PV Popup Zeile 1. Standard 14' },
-          sensor_popup_pv_2_font_size: { label: 'Schriftgroesse PV Popup 2 (px)', helper: 'Schriftgroesse fuer PV Popup Zeile 2. Standard 14' },
-          sensor_popup_pv_3_font_size: { label: 'Schriftgroesse PV Popup 3 (px)', helper: 'Schriftgroesse fuer PV Popup Zeile 3. Standard 14' },
-          sensor_popup_pv_4_font_size: { label: 'Schriftgroesse PV Popup 4 (px)', helper: 'Schriftgroesse fuer PV Popup Zeile 4. Standard 14' },
-          sensor_popup_pv_5_font_size: { label: 'Schriftgroesse PV Popup 5 (px)', helper: 'Schriftgroesse fuer PV Popup Zeile 5. Standard 14' },
-          sensor_popup_pv_6_font_size: { label: 'Schriftgroesse PV Popup 6 (px)', helper: 'Schriftgroesse fuer PV Popup Zeile 6. Standard 14' }
+          sensor_popup_pv_1_font_size: { label: 'Schriftgroesse PV Popup 1 (px)', helper: 'Schriftgroesse fuer PV Popup Zeile 1. Standard 16' },
+          sensor_popup_pv_2_font_size: { label: 'Schriftgroesse PV Popup 2 (px)', helper: 'Schriftgroesse fuer PV Popup Zeile 2. Standard 16' },
+          sensor_popup_pv_3_font_size: { label: 'Schriftgroesse PV Popup 3 (px)', helper: 'Schriftgroesse fuer PV Popup Zeile 3. Standard 16' },
+          sensor_popup_pv_4_font_size: { label: 'Schriftgroesse PV Popup 4 (px)', helper: 'Schriftgroesse fuer PV Popup Zeile 4. Standard 16' },
+          sensor_popup_pv_5_font_size: { label: 'Schriftgroesse PV Popup 5 (px)', helper: 'Schriftgroesse fuer PV Popup Zeile 5. Standard 16' },
+          sensor_popup_pv_6_font_size: { label: 'Schriftgroesse PV Popup 6 (px)', helper: 'Schriftgroesse fuer PV Popup Zeile 6. Standard 16' },
+          sensor_popup_house_1: { label: 'House Popup 1', helper: 'Entitaet fuer House Popup Zeile 1.' },
+          sensor_popup_house_1_name: { label: 'Name House Popup 1', helper: 'Optionaler benutzerdefinierter Name fuer House Popup Zeile 1. Leer lassen, um den Entitaetsnamen zu verwenden.' },
+          sensor_popup_house_1_color: { label: 'Farbe House Popup 1', helper: 'Farbe fuer House Popup Zeile 1 Text.' },
+          sensor_popup_house_1_font_size: { label: 'Schriftgroesse House Popup 1 (px)', helper: 'Schriftgroesse fuer House Popup Zeile 1. Standard 16' },
+          sensor_popup_house_2: { label: 'House Popup 2', helper: 'Entitaet fuer House Popup Zeile 2.' },
+          sensor_popup_house_2_name: { label: 'Name House Popup 2', helper: 'Optionaler benutzerdefinierter Name fuer House Popup Zeile 2. Leer lassen, um den Entitaetsnamen zu verwenden.' },
+          sensor_popup_house_2_color: { label: 'Farbe House Popup 2', helper: 'Farbe fuer House Popup Zeile 2 Text.' },
+          sensor_popup_house_2_font_size: { label: 'Schriftgroesse House Popup 2 (px)', helper: 'Schriftgroesse fuer House Popup Zeile 2. Standard 16' },
+          sensor_popup_house_3: { label: 'House Popup 3', helper: 'Entitaet fuer House Popup Zeile 3.' },
+          sensor_popup_house_3_name: { label: 'Name House Popup 3', helper: 'Optionaler benutzerdefinierter Name fuer House Popup Zeile 3. Leer lassen, um den Entitaetsnamen zu verwenden.' },
+          sensor_popup_house_3_color: { label: 'Farbe House Popup 3', helper: 'Farbe fuer House Popup Zeile 3 Text.' },
+          sensor_popup_house_3_font_size: { label: 'Schriftgroesse House Popup 3 (px)', helper: 'Schriftgroesse fuer House Popup Zeile 3. Standard 16' },
+          sensor_popup_house_4: { label: 'House Popup 4', helper: 'Entitaet fuer House Popup Zeile 4.' },
+          sensor_popup_house_4_name: { label: 'Name House Popup 4', helper: 'Optionaler benutzerdefinierter Name fuer House Popup Zeile 4. Leer lassen, um den Entitaetsnamen zu verwenden.' },
+          sensor_popup_house_4_color: { label: 'Farbe House Popup 4', helper: 'Farbe fuer House Popup Zeile 4 Text.' },
+          sensor_popup_house_4_font_size: { label: 'Schriftgroesse House Popup 4 (px)', helper: 'Schriftgroesse fuer House Popup Zeile 4. Standard 16' },
+          sensor_popup_house_5: { label: 'House Popup 5', helper: 'Entitaet fuer House Popup Zeile 5.' },
+          sensor_popup_house_5_name: { label: 'Name House Popup 5', helper: 'Optionaler benutzerdefinierter Name fuer House Popup Zeile 5. Leer lassen, um den Entitaetsnamen zu verwenden.' },
+          sensor_popup_house_5_color: { label: 'Farbe House Popup 5', helper: 'Farbe fuer House Popup Zeile 5 Text.' },
+          sensor_popup_house_5_font_size: { label: 'Schriftgroesse House Popup 5 (px)', helper: 'Schriftgroesse fuer House Popup Zeile 5. Standard 16' },
+          sensor_popup_house_6: { label: 'House Popup 6', helper: 'Entitaet fuer House Popup Zeile 6.' },
+          sensor_popup_house_6_name: { label: 'Name House Popup 6', helper: 'Optionaler benutzerdefinierter Name fuer House Popup Zeile 6. Leer lassen, um den Entitaetsnamen zu verwenden.' },
+          sensor_popup_house_6_color: { label: 'Farbe House Popup 6', helper: 'Farbe fuer House Popup Zeile 6 Text.' },
+          sensor_popup_house_6_font_size: { label: 'Schriftgroesse House Popup 6 (px)', helper: 'Schriftgroesse fuer House Popup Zeile 6. Standard 16' }
         },
         options: {
           languages: [
@@ -2718,6 +2975,7 @@ class LuminaEnergyCardEditor extends HTMLElement {
           general: { title: 'Paramètres généraux', helper: 'Métadonnées de la carte, arrière-plan, langue et fréquence de mise à jour.' },
           entities: { title: 'Sélection d entités', helper: 'Choisissez les entités PV, batterie, réseau, charge et EV utilisées par la carte. Soit le capteur PV total, soit vos tableaux de chaînes PV doivent être spécifiés au minimum.' },
           pvPopup: { title: 'Popup PV', helper: 'Configurer les entités pour l\'affichage du popup PV.' },
+          housePopup: { title: 'Popup Maison', helper: 'Configurer les entités pour l\'affichage du popup maison.' },
           colors: { title: 'Couleurs & Seuils', helper: 'Configurez les seuils réseau et les couleurs d accent pour les flux et l affichage EV.' },
           typography: { title: 'Typographie', helper: 'Ajustez les tailles de police utilisées dans la carte.' },
           about: { title: 'À propos', helper: 'Crédits, version et liens utiles.' }
@@ -2812,7 +3070,7 @@ class LuminaEnergyCardEditor extends HTMLElement {
           daily_value_font_size: { label: 'Taille valeur quotidienne (px)', helper: 'Par défaut 20' },
           pv_font_size: { label: 'Taille police PV (px)', helper: 'Par défaut 16' },
           battery_soc_font_size: { label: 'Taille SOC batterie (px)', helper: 'Par défaut 20' },
-          battery_power_font_size: { label: 'Taille puissance batterie (px)', helper: 'Par défaut 14' },
+          battery_power_font_size: { label: 'Taille puissance batterie (px)', helper: 'Par défaut 16' },
           load_font_size: { label: 'Taille police charge (px)', helper: 'Par défaut 15' },
           grid_font_size: { label: 'Taille police réseau (px)', helper: 'Par défaut 15' },
           car_power_font_size: { label: 'Taille puissance véhicule (px)', helper: 'Par défaut 15' },
@@ -2839,12 +3097,36 @@ class LuminaEnergyCardEditor extends HTMLElement {
           sensor_popup_pv_4_color: { label: 'Couleur Popup PV 4', helper: 'Couleur pour le texte de la ligne 4 du popup PV.' },
           sensor_popup_pv_5_color: { label: 'Couleur Popup PV 5', helper: 'Couleur pour le texte de la ligne 5 du popup PV.' },
           sensor_popup_pv_6_color: { label: 'Couleur Popup PV 6', helper: 'Couleur pour le texte de la ligne 6 du popup PV.' },
-          sensor_popup_pv_1_font_size: { label: 'Taille police Popup PV 1 (px)', helper: 'Taille de police pour la ligne 1 du popup PV. Par défaut 14' },
-          sensor_popup_pv_2_font_size: { label: 'Taille police Popup PV 2 (px)', helper: 'Taille de police pour la ligne 2 du popup PV. Par défaut 14' },
-          sensor_popup_pv_3_font_size: { label: 'Taille police Popup PV 3 (px)', helper: 'Taille de police pour la ligne 3 du popup PV. Par défaut 14' },
-          sensor_popup_pv_4_font_size: { label: 'Taille police Popup PV 4 (px)', helper: 'Taille de police pour la ligne 4 du popup PV. Par défaut 14' },
-          sensor_popup_pv_5_font_size: { label: 'Taille police Popup PV 5 (px)', helper: 'Taille de police pour la ligne 5 du popup PV. Par défaut 14' },
-          sensor_popup_pv_6_font_size: { label: 'Taille police Popup PV 6 (px)', helper: 'Taille de police pour la ligne 6 du popup PV. Par défaut 14' }
+          sensor_popup_pv_1_font_size: { label: 'Taille police Popup PV 1 (px)', helper: 'Taille de police pour la ligne 1 du popup PV. Par défaut 16' },
+          sensor_popup_pv_2_font_size: { label: 'Taille police Popup PV 2 (px)', helper: 'Taille de police pour la ligne 2 du popup PV. Par défaut 16' },
+          sensor_popup_pv_3_font_size: { label: 'Taille police Popup PV 3 (px)', helper: 'Taille de police pour la ligne 3 du popup PV. Par défaut 16' },
+          sensor_popup_pv_4_font_size: { label: 'Taille police Popup PV 4 (px)', helper: 'Taille de police pour la ligne 4 du popup PV. Par défaut 16' },
+                    sensor_popup_pv_5_font_size: { label: 'Taille police Popup PV 5 (px)', helper: 'Taille de police pour la ligne 5 du popup PV. Par défaut 16' },
+          sensor_popup_pv_6_font_size: { label: 'Taille police Popup PV 6 (px)', helper: 'Taille de police pour la ligne 6 du popup PV. Par défaut 16' },
+          sensor_popup_house_1: { label: 'Popup Maison 1', helper: 'Entité pour la ligne 1 du popup maison.' },
+          sensor_popup_house_1_name: { label: 'Nom Popup Maison 1', helper: 'Nom personnalisé optionnel pour la ligne 1 du popup maison. Laisser vide pour utiliser le nom de l\'entité.' },
+          sensor_popup_house_1_color: { label: 'Couleur Popup Maison 1', helper: 'Couleur pour le texte de la ligne 1 du popup maison.' },
+          sensor_popup_house_1_font_size: { label: 'Taille police Popup Maison 1 (px)', helper: 'Taille de police pour la ligne 1 du popup maison. Par défaut 16' },
+          sensor_popup_house_2: { label: 'Popup Maison 2', helper: 'Entité pour la ligne 2 du popup maison.' },
+          sensor_popup_house_2_name: { label: 'Nom Popup Maison 2', helper: 'Nom personnalisé optionnel pour la ligne 2 du popup maison. Laisser vide pour utiliser le nom de l\'entité.' },
+          sensor_popup_house_2_color: { label: 'Couleur Popup Maison 2', helper: 'Couleur pour le texte de la ligne 2 du popup maison.' },
+          sensor_popup_house_2_font_size: { label: 'Taille police Popup Maison 2 (px)', helper: 'Taille de police pour la ligne 2 du popup maison. Par défaut 16' },
+          sensor_popup_house_3: { label: 'Popup Maison 3', helper: 'Entité pour la ligne 3 du popup maison.' },
+          sensor_popup_house_3_name: { label: 'Nom Popup Maison 3', helper: 'Nom personnalisé optionnel pour la ligne 3 du popup maison. Laisser vide pour utiliser le nom de l\'entité.' },
+          sensor_popup_house_3_color: { label: 'Couleur Popup Maison 3', helper: 'Couleur pour le texte de la ligne 3 du popup maison.' },
+          sensor_popup_house_3_font_size: { label: 'Taille police Popup Maison 3 (px)', helper: 'Taille de police pour la ligne 3 du popup maison. Par défaut 16' },
+          sensor_popup_house_4: { label: 'Popup Maison 4', helper: 'Entité pour la ligne 4 du popup maison.' },
+          sensor_popup_house_4_name: { label: 'Nom Popup Maison 4', helper: 'Nom personnalisé optionnel pour la ligne 4 du popup maison. Laisser vide pour utiliser le nom de l\'entité.' },
+          sensor_popup_house_4_color: { label: 'Couleur Popup Maison 4', helper: 'Couleur pour le texte de la ligne 4 du popup maison.' },
+          sensor_popup_house_4_font_size: { label: 'Taille police Popup Maison 4 (px)', helper: 'Taille de police pour la ligne 4 du popup maison. Par défaut 16' },
+          sensor_popup_house_5: { label: 'Popup Maison 5', helper: 'Entité pour la ligne 5 du popup maison.' },
+          sensor_popup_house_5_name: { label: 'Nom Popup Maison 5', helper: 'Nom personnalisé optionnel pour la ligne 5 du popup maison. Laisser vide pour utiliser le nom de l\'entité.' },
+          sensor_popup_house_5_color: { label: 'Couleur Popup Maison 5', helper: 'Couleur pour le texte de la ligne 5 du popup maison.' },
+          sensor_popup_house_5_font_size: { label: 'Taille police Popup Maison 5 (px)', helper: 'Taille de police pour la ligne 5 du popup maison. Par défaut 16' },
+          sensor_popup_house_6: { label: 'Popup Maison 6', helper: 'Entité pour la ligne 6 du popup maison.' },
+          sensor_popup_house_6_name: { label: 'Nom Popup Maison 6', helper: 'Nom personnalisé optionnel pour la ligne 6 du popup maison. Laisser vide pour utiliser le nom de l\'entité.' },
+          sensor_popup_house_6_color: { label: 'Couleur Popup Maison 6', helper: 'Couleur pour le texte de la ligne 6 du popup maison.' },
+          sensor_popup_house_6_font_size: { label: 'Taille police Popup Maison 6 (px)', helper: 'Taille de police pour la ligne 6 du popup maison. Par défaut 16' }
         },
         options: {
           languages: [
@@ -2879,6 +3161,7 @@ class LuminaEnergyCardEditor extends HTMLElement {
           general: { title: 'Algemene instellingen', helper: 'Metadata van de kaart, achtergrond, taal en update frequentie.' },
           entities: { title: 'Entiteit selectie', helper: 'Kies de PV, batterij, grid, load en EV entiteiten gebruikt door de kaart. Of de totale PV sensor, of uw PV string arrays moeten minimaal worden gespecificeerd.' },
           pvPopup: { title: 'PV Popup', helper: 'Configureer entiteiten voor de PV popup weergave.' },
+          housePopup: { title: 'House Popup', helper: 'Configureer entiteiten voor de house popup weergave.' },
           colors: { title: 'Kleuren & Drempels', helper: 'Configureer grid drempels en accent kleuren voor flows en EV weergave.' },
           typography: { title: 'Typografie', helper: 'Pas de lettergrootte aan gebruikt in de kaart.' },
           about: { title: 'Over', helper: 'Credits, versie en nuttige links.' }
@@ -2973,7 +3256,7 @@ class LuminaEnergyCardEditor extends HTMLElement {
           daily_value_font_size: { label: 'Dagelijks waarde lettergrootte (px)', helper: 'Standaard 20' },
           pv_font_size: { label: 'PV lettergrootte (px)', helper: 'Standaard 16' },
           battery_soc_font_size: { label: 'Batterij SOC lettergrootte (px)', helper: 'Standaard 20' },
-          battery_power_font_size: { label: 'Batterij vermogen lettergrootte (px)', helper: 'Standaard 14' },
+          battery_power_font_size: { label: 'Batterij vermogen lettergrootte (px)', helper: 'Standaard 16' },
           load_font_size: { label: 'Belasting lettergrootte (px)', helper: 'Standaard 15' },
           grid_font_size: { label: 'Grid lettergrootte (px)', helper: 'Standaard 15' },
           car_power_font_size: { label: 'Voertuig vermogen lettergrootte (px)', helper: 'Standaard 15' },
@@ -3000,12 +3283,36 @@ class LuminaEnergyCardEditor extends HTMLElement {
           sensor_popup_pv_4_color: { label: 'Kleur PV Popup 4', helper: 'Kleur voor PV popup lijn 4 tekst.' },
           sensor_popup_pv_5_color: { label: 'Kleur PV Popup 5', helper: 'Kleur voor PV popup lijn 5 tekst.' },
           sensor_popup_pv_6_color: { label: 'Kleur PV Popup 6', helper: 'Kleur voor PV popup lijn 6 tekst.' },
-          sensor_popup_pv_1_font_size: { label: 'Lettergrootte PV Popup 1 (px)', helper: 'Lettergrootte voor PV popup lijn 1. Standaard 14' },
-          sensor_popup_pv_2_font_size: { label: 'Lettergrootte PV Popup 2 (px)', helper: 'Lettergrootte voor PV popup lijn 2. Standaard 14' },
-          sensor_popup_pv_3_font_size: { label: 'Lettergrootte PV Popup 3 (px)', helper: 'Lettergrootte voor PV popup lijn 3. Standaard 14' },
-          sensor_popup_pv_4_font_size: { label: 'Lettergrootte PV Popup 4 (px)', helper: 'Lettergrootte voor PV popup lijn 4. Standaard 14' },
-          sensor_popup_pv_5_font_size: { label: 'Lettergrootte PV Popup 5 (px)', helper: 'Lettergrootte voor PV popup lijn 5. Standaard 14' },
-          sensor_popup_pv_6_font_size: { label: 'Lettergrootte PV Popup 6 (px)', helper: 'Lettergrootte voor PV popup lijn 6. Standaard 14' }
+          sensor_popup_pv_1_font_size: { label: 'Lettergrootte PV Popup 1 (px)', helper: 'Lettergrootte voor PV popup lijn 1. Standaard 16' },
+          sensor_popup_pv_2_font_size: { label: 'Lettergrootte PV Popup 2 (px)', helper: 'Lettergrootte voor PV popup lijn 2. Standaard 16' },
+          sensor_popup_pv_3_font_size: { label: 'Lettergrootte PV Popup 3 (px)', helper: 'Lettergrootte voor PV popup lijn 3. Standaard 16' },
+          sensor_popup_pv_4_font_size: { label: 'Lettergrootte PV Popup 4 (px)', helper: 'Lettergrootte voor PV popup lijn 4. Standaard 16' },
+          sensor_popup_pv_5_font_size: { label: 'Lettergrootte PV Popup 5 (px)', helper: 'Lettergrootte voor PV popup lijn 5. Standaard 16' },
+          sensor_popup_pv_6_font_size: { label: 'Lettergrootte PV Popup 6 (px)', helper: 'Lettergrootte voor PV popup lijn 6. Standaard 16' },
+          sensor_popup_house_1: { label: 'House Popup 1', helper: 'Entiteit voor house popup lijn 1.' },
+          sensor_popup_house_1_name: { label: 'Naam House Popup 1', helper: 'Optionele aangepaste naam voor house popup lijn 1. Laat leeg om entiteit naam te gebruiken.' },
+          sensor_popup_house_1_color: { label: 'Kleur House Popup 1', helper: 'Kleur voor house popup lijn 1 tekst.' },
+          sensor_popup_house_1_font_size: { label: 'Lettergrootte House Popup 1 (px)', helper: 'Lettergrootte voor house popup lijn 1. Standaard 16' },
+          sensor_popup_house_2: { label: 'House Popup 2', helper: 'Entiteit voor house popup lijn 2.' },
+          sensor_popup_house_2_name: { label: 'Naam House Popup 2', helper: 'Optionele aangepaste naam voor house popup lijn 2. Laat leeg om entiteit naam te gebruiken.' },
+          sensor_popup_house_2_color: { label: 'Kleur House Popup 2', helper: 'Kleur voor house popup lijn 2 tekst.' },
+          sensor_popup_house_2_font_size: { label: 'Lettergrootte House Popup 2 (px)', helper: 'Lettergrootte voor house popup lijn 2. Standaard 16' },
+          sensor_popup_house_3: { label: 'House Popup 3', helper: 'Entiteit voor house popup lijn 3.' },
+          sensor_popup_house_3_name: { label: 'Naam House Popup 3', helper: 'Optionele aangepaste naam voor house popup lijn 3. Laat leeg om entiteit naam te gebruiken.' },
+          sensor_popup_house_3_color: { label: 'Kleur House Popup 3', helper: 'Kleur voor house popup lijn 3 tekst.' },
+          sensor_popup_house_3_font_size: { label: 'Lettergrootte House Popup 3 (px)', helper: 'Lettergrootte voor house popup lijn 3. Standaard 16' },
+          sensor_popup_house_4: { label: 'House Popup 4', helper: 'Entiteit voor house popup lijn 4.' },
+          sensor_popup_house_4_name: { label: 'Naam House Popup 4', helper: 'Optionele aangepaste naam voor house popup lijn 4. Laat leeg om entiteit naam te gebruiken.' },
+          sensor_popup_house_4_color: { label: 'Kleur House Popup 4', helper: 'Kleur voor house popup lijn 4 tekst.' },
+          sensor_popup_house_4_font_size: { label: 'Lettergrootte House Popup 4 (px)', helper: 'Lettergrootte voor house popup lijn 4. Standaard 16' },
+          sensor_popup_house_5: { label: 'House Popup 5', helper: 'Entiteit voor house popup lijn 5.' },
+          sensor_popup_house_5_name: { label: 'Naam House Popup 5', helper: 'Optionele aangepaste naam voor house popup lijn 5. Laat leeg om entiteit naam te gebruiken.' },
+          sensor_popup_house_5_color: { label: 'Kleur House Popup 5', helper: 'Kleur voor house popup lijn 5 tekst.' },
+          sensor_popup_house_5_font_size: { label: 'Lettergrootte House Popup 5 (px)', helper: 'Lettergrootte voor house popup lijn 5. Standaard 16' },
+          sensor_popup_house_6: { label: 'House Popup 6', helper: 'Entiteit voor house popup lijn 6.' },
+          sensor_popup_house_6_name: { label: 'Naam House Popup 6', helper: 'Optionele aangepaste naam voor house popup lijn 6. Laat leeg om entiteit naam te gebruiken.' },
+          sensor_popup_house_6_color: { label: 'Kleur House Popup 6', helper: 'Kleur voor house popup lijn 6 tekst.' },
+          sensor_popup_house_6_font_size: { label: 'Lettergrootte House Popup 6 (px)', helper: 'Lettergrootte voor house popup lijn 6. Standaard 16' }
         },
         options: {
           languages: [
@@ -3376,6 +3683,12 @@ class LuminaEnergyCardEditor extends HTMLElement {
         ,{ name: 'sensor_popup_pv_4_color', label: fields.sensor_popup_pv_4_color.label, helper: fields.sensor_popup_pv_4_color.helper, selector: { color_picker: {} }, default: '#80ffff' }
         ,{ name: 'sensor_popup_pv_5_color', label: fields.sensor_popup_pv_5_color.label, helper: fields.sensor_popup_pv_5_color.helper, selector: { color_picker: {} }, default: '#80ffff' }
         ,{ name: 'sensor_popup_pv_6_color', label: fields.sensor_popup_pv_6_color.label, helper: fields.sensor_popup_pv_6_color.helper, selector: { color_picker: {} }, default: '#80ffff' }
+        ,{ name: 'sensor_popup_house_1_color', label: fields.sensor_popup_house_1_color.label, helper: fields.sensor_popup_house_1_color.helper, selector: { color_picker: {} }, default: '#80ffff' }
+        ,{ name: 'sensor_popup_house_2_color', label: fields.sensor_popup_house_2_color.label, helper: fields.sensor_popup_house_2_color.helper, selector: { color_picker: {} }, default: '#80ffff' }
+        ,{ name: 'sensor_popup_house_3_color', label: fields.sensor_popup_house_3_color.label, helper: fields.sensor_popup_house_3_color.helper, selector: { color_picker: {} }, default: '#80ffff' }
+        ,{ name: 'sensor_popup_house_4_color', label: fields.sensor_popup_house_4_color.label, helper: fields.sensor_popup_house_4_color.helper, selector: { color_picker: {} }, default: '#80ffff' }
+        ,{ name: 'sensor_popup_house_5_color', label: fields.sensor_popup_house_5_color.label, helper: fields.sensor_popup_house_5_color.helper, selector: { color_picker: {} }, default: '#80ffff' }
+        ,{ name: 'sensor_popup_house_6_color', label: fields.sensor_popup_house_6_color.label, helper: fields.sensor_popup_house_6_color.helper, selector: { color_picker: {} }, default: '#80ffff' }
       ]),
       typography: define([
         { name: 'header_font_size', label: fields.header_font_size.label, helper: fields.header_font_size.helper, selector: { text: { mode: 'blur' } } },
@@ -3397,7 +3710,13 @@ class LuminaEnergyCardEditor extends HTMLElement {
         { name: 'sensor_popup_pv_3_font_size', label: fields.sensor_popup_pv_3_font_size.label, helper: fields.sensor_popup_pv_3_font_size.helper, selector: { text: { mode: 'blur' } } },
         { name: 'sensor_popup_pv_4_font_size', label: fields.sensor_popup_pv_4_font_size.label, helper: fields.sensor_popup_pv_4_font_size.helper, selector: { text: { mode: 'blur' } } },
         { name: 'sensor_popup_pv_5_font_size', label: fields.sensor_popup_pv_5_font_size.label, helper: fields.sensor_popup_pv_5_font_size.helper, selector: { text: { mode: 'blur' } } },
-        { name: 'sensor_popup_pv_6_font_size', label: fields.sensor_popup_pv_6_font_size.label, helper: fields.sensor_popup_pv_6_font_size.helper, selector: { text: { mode: 'blur' } } }
+        { name: 'sensor_popup_pv_6_font_size', label: fields.sensor_popup_pv_6_font_size.label, helper: fields.sensor_popup_pv_6_font_size.helper, selector: { text: { mode: 'blur' } } },
+        { name: 'sensor_popup_house_1_font_size', label: fields.sensor_popup_house_1_font_size.label, helper: fields.sensor_popup_house_1_font_size.helper, selector: { text: { mode: 'blur' } } },
+        { name: 'sensor_popup_house_2_font_size', label: fields.sensor_popup_house_2_font_size.label, helper: fields.sensor_popup_house_2_font_size.helper, selector: { text: { mode: 'blur' } } },
+        { name: 'sensor_popup_house_3_font_size', label: fields.sensor_popup_house_3_font_size.label, helper: fields.sensor_popup_house_3_font_size.helper, selector: { text: { mode: 'blur' } } },
+        { name: 'sensor_popup_house_4_font_size', label: fields.sensor_popup_house_4_font_size.label, helper: fields.sensor_popup_house_4_font_size.helper, selector: { text: { mode: 'blur' } } },
+        { name: 'sensor_popup_house_5_font_size', label: fields.sensor_popup_house_5_font_size.label, helper: fields.sensor_popup_house_5_font_size.helper, selector: { text: { mode: 'blur' } } },
+        { name: 'sensor_popup_house_6_font_size', label: fields.sensor_popup_house_6_font_size.label, helper: fields.sensor_popup_house_6_font_size.helper, selector: { text: { mode: 'blur' } } }
       ]),
       pvPopup: define([
         { name: 'sensor_popup_pv_1', label: fields.sensor_popup_pv_1.label, helper: fields.sensor_popup_pv_1.helper, selector: entitySelector },
@@ -3412,6 +3731,20 @@ class LuminaEnergyCardEditor extends HTMLElement {
         { name: 'sensor_popup_pv_5_name', label: fields.sensor_popup_pv_5_name.label, helper: fields.sensor_popup_pv_5_name.helper, selector: { text: {} } },
         { name: 'sensor_popup_pv_6', label: fields.sensor_popup_pv_6.label, helper: fields.sensor_popup_pv_6.helper, selector: entitySelector },
         { name: 'sensor_popup_pv_6_name', label: fields.sensor_popup_pv_6_name.label, helper: fields.sensor_popup_pv_6_name.helper, selector: { text: {} } }
+      ]),
+      housePopup: define([
+        { name: 'sensor_popup_house_1', label: fields.sensor_popup_house_1.label, helper: fields.sensor_popup_house_1.helper, selector: { entity: {} } },
+        { name: 'sensor_popup_house_1_name', label: fields.sensor_popup_house_1_name.label, helper: fields.sensor_popup_house_1_name.helper, selector: { text: {} } },
+        { name: 'sensor_popup_house_2', label: fields.sensor_popup_house_2.label, helper: fields.sensor_popup_house_2.helper, selector: { entity: {} } },
+        { name: 'sensor_popup_house_2_name', label: fields.sensor_popup_house_2_name.label, helper: fields.sensor_popup_house_2_name.helper, selector: { text: {} } },
+        { name: 'sensor_popup_house_3', label: fields.sensor_popup_house_3.label, helper: fields.sensor_popup_house_3.helper, selector: { entity: {} } },
+        { name: 'sensor_popup_house_3_name', label: fields.sensor_popup_house_3_name.label, helper: fields.sensor_popup_house_3_name.helper, selector: { text: {} } },
+        { name: 'sensor_popup_house_4', label: fields.sensor_popup_house_4.label, helper: fields.sensor_popup_house_4.helper, selector: { entity: {} } },
+        { name: 'sensor_popup_house_4_name', label: fields.sensor_popup_house_4_name.label, helper: fields.sensor_popup_house_4_name.helper, selector: { text: {} } },
+        { name: 'sensor_popup_house_5', label: fields.sensor_popup_house_5.label, helper: fields.sensor_popup_house_5.helper, selector: { entity: {} } },
+        { name: 'sensor_popup_house_5_name', label: fields.sensor_popup_house_5_name.label, helper: fields.sensor_popup_house_5_name.helper, selector: { text: {} } },
+        { name: 'sensor_popup_house_6', label: fields.sensor_popup_house_6.label, helper: fields.sensor_popup_house_6.helper, selector: { entity: {} } },
+        { name: 'sensor_popup_house_6_name', label: fields.sensor_popup_house_6_name.label, helper: fields.sensor_popup_house_6_name.helper, selector: { text: {} } }
       ])
     };
   }
@@ -3494,6 +3827,7 @@ class LuminaEnergyCardEditor extends HTMLElement {
         }
       },
       { id: 'pvPopup', title: sections.pvPopup.title, helper: sections.pvPopup.helper, schema: schemaDefs.pvPopup, defaultOpen: false },
+      { id: 'housePopup', title: sections.housePopup.title, helper: sections.housePopup.helper, schema: schemaDefs.housePopup, defaultOpen: false },
       { id: 'colors', title: sections.colors.title, helper: sections.colors.helper, schema: schemaDefs.colors, defaultOpen: false },
       { id: 'typography', title: sections.typography.title, helper: sections.typography.helper, schema: schemaDefs.typography, defaultOpen: false },
       { id: 'general', title: sections.general.title, helper: sections.general.helper, schema: schemaDefs.general, defaultOpen: false },
