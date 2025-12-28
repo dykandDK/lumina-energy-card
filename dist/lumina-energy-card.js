@@ -1,7 +1,7 @@
 /**
  * Lumina Energy Card
  * Custom Home Assistant card for energy flow visualization
- * Version: 1.1.26
+ * Version: 1.1.27
  * Tested with Home Assistant 2025.12+
  */
 const BATTERY_GEOMETRY = { X: 260, Y_BASE: 350, WIDTH: 55, MAX_HEIGHT: 84 };
@@ -921,19 +921,29 @@ class LuminaEnergyCard extends HTMLElement {
     return Math.round(watts) + ' W';
   }
 
-  formatPopupValue(value, sensorId) {
-    if (value === null || value === undefined) return '';
-    const entity = sensorId && this._hass.states[sensorId];
-    const unit = entity && entity.attributes ? entity.attributes.unit_of_measurement : '';
-    if (typeof value === 'number') {
-      if (unit) {
-        return `${value} ${unit}`;
-      } else {
-        return value.toString();
-      }
-    } else {
-      return value.toString();
+  formatPopupValue(_unused, sensorId) {
+    if (!sensorId || !this._hass || !this._hass.states) {
+      return '';
     }
+    const resolvedId = typeof sensorId === 'string' ? sensorId.trim() : sensorId;
+    if (!resolvedId || !this._hass.states[resolvedId]) {
+      return '';
+    }
+    const entity = this._hass.states[resolvedId];
+    const rawState = entity && entity.state !== undefined && entity.state !== null
+      ? entity.state.toString().trim()
+      : '';
+    if (!rawState) {
+      return '';
+    }
+    const lowerState = rawState.toLowerCase();
+    if (lowerState === 'unknown' || lowerState === 'unavailable') {
+      return rawState;
+    }
+    const unit = (entity.attributes && typeof entity.attributes.unit_of_measurement === 'string')
+      ? entity.attributes.unit_of_measurement.trim()
+      : '';
+    return unit ? `${rawState} ${unit}` : rawState;
   }
 
   render() {
@@ -1148,14 +1158,15 @@ class LuminaEnergyCard extends HTMLElement {
     const car2Transforms = buildCarTextTransforms(carLayout.car2);
 
     // PV Popup
-    const popupPvValues = [
-      config.sensor_popup_pv_1 ? this.getStateSafe(config.sensor_popup_pv_1) : null,
-      config.sensor_popup_pv_2 ? this.getStateSafe(config.sensor_popup_pv_2) : null,
-      config.sensor_popup_pv_3 ? this.getStateSafe(config.sensor_popup_pv_3) : null,
-      config.sensor_popup_pv_4 ? this.getStateSafe(config.sensor_popup_pv_4) : null,
-      config.sensor_popup_pv_5 ? this.getStateSafe(config.sensor_popup_pv_5) : null,
-      config.sensor_popup_pv_6 ? this.getStateSafe(config.sensor_popup_pv_6) : null
+    const popupPvSensorIds = [
+      config.sensor_popup_pv_1,
+      config.sensor_popup_pv_2,
+      config.sensor_popup_pv_3,
+      config.sensor_popup_pv_4,
+      config.sensor_popup_pv_5,
+      config.sensor_popup_pv_6
     ];
+    const popupPvValues = popupPvSensorIds.map((sensorId) => this.formatPopupValue(null, sensorId));
 
     // PV Popup names
     const popupPvNames = [
@@ -1168,14 +1179,15 @@ class LuminaEnergyCard extends HTMLElement {
     ];
 
     // House Popup
-    const popupHouseValues = [
-      config.sensor_popup_house_1 ? this.getStateSafe(config.sensor_popup_house_1) : null,
-      config.sensor_popup_house_2 ? this.getStateSafe(config.sensor_popup_house_2) : null,
-      config.sensor_popup_house_3 ? this.getStateSafe(config.sensor_popup_house_3) : null,
-      config.sensor_popup_house_4 ? this.getStateSafe(config.sensor_popup_house_4) : null,
-      config.sensor_popup_house_5 ? this.getStateSafe(config.sensor_popup_house_5) : null,
-      config.sensor_popup_house_6 ? this.getStateSafe(config.sensor_popup_house_6) : null
+    const popupHouseSensorIds = [
+      config.sensor_popup_house_1,
+      config.sensor_popup_house_2,
+      config.sensor_popup_house_3,
+      config.sensor_popup_house_4,
+      config.sensor_popup_house_5,
+      config.sensor_popup_house_6
     ];
+    const popupHouseValues = popupHouseSensorIds.map((sensorId) => this.formatPopupValue(null, sensorId));
 
     // House Popup names
     const popupHouseNames = [
@@ -1514,12 +1526,9 @@ class LuminaEnergyCard extends HTMLElement {
       },
       car1: car1View,
       car2: car2View,
-      popup: { 
-        lines: popupPvValues.map((v, i) => {
-          const sensorId = [config.sensor_popup_pv_1, config.sensor_popup_pv_2, config.sensor_popup_pv_3, config.sensor_popup_pv_4, config.sensor_popup_pv_5, config.sensor_popup_pv_6][i];
-          return v !== null ? `${popupPvNames[i]}: ${this.formatPopupValue(v, sensorId)}` : '';
-        }),
-        hasContent: popupPvValues.some(v => v !== null)
+      popup: {
+        lines: popupPvValues.map((valueText, i) => (valueText ? `${popupPvNames[i]}: ${valueText}` : '')),
+        hasContent: popupPvValues.some((valueText) => Boolean(valueText))
       },
       flows,
       flowDurations,
@@ -1862,16 +1871,16 @@ class LuminaEnergyCard extends HTMLElement {
     
     // Calculate popup content
     const config = this._config || this.config || {};
-    const use_kw = config.display_unit === 'kW';
     
-    const popupPvValues = [
-      config.sensor_popup_pv_1 ? this.getStateSafe(config.sensor_popup_pv_1) : null,
-      config.sensor_popup_pv_2 ? this.getStateSafe(config.sensor_popup_pv_2) : null,
-      config.sensor_popup_pv_3 ? this.getStateSafe(config.sensor_popup_pv_3) : null,
-      config.sensor_popup_pv_4 ? this.getStateSafe(config.sensor_popup_pv_4) : null,
-      config.sensor_popup_pv_5 ? this.getStateSafe(config.sensor_popup_pv_5) : null,
-      config.sensor_popup_pv_6 ? this.getStateSafe(config.sensor_popup_pv_6) : null
+    const popupPvSensorIds = [
+      config.sensor_popup_pv_1,
+      config.sensor_popup_pv_2,
+      config.sensor_popup_pv_3,
+      config.sensor_popup_pv_4,
+      config.sensor_popup_pv_5,
+      config.sensor_popup_pv_6
     ];
+    const popupPvValues = popupPvSensorIds.map((sensorId) => this.formatPopupValue(null, sensorId));
 
     const popupPvNames = [
       config.sensor_popup_pv_1_name && config.sensor_popup_pv_1_name.trim() ? config.sensor_popup_pv_1_name.trim() : this.getEntityName(config.sensor_popup_pv_1),
@@ -1882,10 +1891,9 @@ class LuminaEnergyCard extends HTMLElement {
       config.sensor_popup_pv_6_name && config.sensor_popup_pv_6_name.trim() ? config.sensor_popup_pv_6_name.trim() : this.getEntityName(config.sensor_popup_pv_6)
     ];
 
-    const lines = popupPvValues.map((v, i) => {
-      const sensorId = [config.sensor_popup_pv_1, config.sensor_popup_pv_2, config.sensor_popup_pv_3, config.sensor_popup_pv_4, config.sensor_popup_pv_5, config.sensor_popup_pv_6][i];
-      return v !== null ? `${popupPvNames[i]}: ${this.formatPopupValue(v, sensorId)}` : '';
-    }).filter(line => line);
+    const lines = popupPvValues
+      .map((valueText, i) => (valueText ? `${popupPvNames[i]}: ${valueText}` : ''))
+      .filter((line) => line);
     if (!lines.length) return;
     
     // Calculate popup dimensions based on content
@@ -1998,15 +2006,15 @@ class LuminaEnergyCard extends HTMLElement {
     const popup = this._domRefs.batteryPopup;
 
     const config = this._config || this.config || {};
-    const use_kw = config.display_unit === 'kW';
-    const popupBatValues = [
-      config.sensor_popup_bat_1 ? this.getStateSafe(config.sensor_popup_bat_1) : null,
-      config.sensor_popup_bat_2 ? this.getStateSafe(config.sensor_popup_bat_2) : null,
-      config.sensor_popup_bat_3 ? this.getStateSafe(config.sensor_popup_bat_3) : null,
-      config.sensor_popup_bat_4 ? this.getStateSafe(config.sensor_popup_bat_4) : null,
-      config.sensor_popup_bat_5 ? this.getStateSafe(config.sensor_popup_bat_5) : null,
-      config.sensor_popup_bat_6 ? this.getStateSafe(config.sensor_popup_bat_6) : null
+    const popupBatSensorIds = [
+      config.sensor_popup_bat_1,
+      config.sensor_popup_bat_2,
+      config.sensor_popup_bat_3,
+      config.sensor_popup_bat_4,
+      config.sensor_popup_bat_5,
+      config.sensor_popup_bat_6
     ];
+    const popupBatValues = popupBatSensorIds.map((sensorId) => this.formatPopupValue(null, sensorId));
 
     const popupBatNames = [
       config.sensor_popup_bat_1_name && config.sensor_popup_bat_1_name.trim() ? config.sensor_popup_bat_1_name.trim() : this.getEntityName(config.sensor_popup_bat_1),
@@ -2017,10 +2025,9 @@ class LuminaEnergyCard extends HTMLElement {
       config.sensor_popup_bat_6_name && config.sensor_popup_bat_6_name.trim() ? config.sensor_popup_bat_6_name.trim() : this.getEntityName(config.sensor_popup_bat_6)
     ];
 
-    const lines = popupBatValues.map((v, i) => {
-      const sensorId = [config.sensor_popup_bat_1, config.sensor_popup_bat_2, config.sensor_popup_bat_3, config.sensor_popup_bat_4, config.sensor_popup_bat_5, config.sensor_popup_bat_6][i];
-      return v !== null ? `${popupBatNames[i]}: ${this.formatPopupValue(v, sensorId)}` : '';
-    }).filter(line => line);
+    const lines = popupBatValues
+      .map((valueText, i) => (valueText ? `${popupBatNames[i]}: ${valueText}` : ''))
+      .filter((line) => line);
     if (!lines.length) return;
 
     const maxLineLength = Math.max(...lines.map(line => line.length));
@@ -2125,14 +2132,15 @@ class LuminaEnergyCard extends HTMLElement {
     // Get house popup data
     const config = this._config || this.config || {};
     if (!config) return;
-    const popupHouseValues = [
-      config.sensor_popup_house_1 ? this.getStateSafe(config.sensor_popup_house_1) : null,
-      config.sensor_popup_house_2 ? this.getStateSafe(config.sensor_popup_house_2) : null,
-      config.sensor_popup_house_3 ? this.getStateSafe(config.sensor_popup_house_3) : null,
-      config.sensor_popup_house_4 ? this.getStateSafe(config.sensor_popup_house_4) : null,
-      config.sensor_popup_house_5 ? this.getStateSafe(config.sensor_popup_house_5) : null,
-      config.sensor_popup_house_6 ? this.getStateSafe(config.sensor_popup_house_6) : null
+    const popupHouseSensorIds = [
+      config.sensor_popup_house_1,
+      config.sensor_popup_house_2,
+      config.sensor_popup_house_3,
+      config.sensor_popup_house_4,
+      config.sensor_popup_house_5,
+      config.sensor_popup_house_6
     ];
+    const popupHouseValues = popupHouseSensorIds.map((sensorId) => this.formatPopupValue(null, sensorId));
     
     const popupHouseNames = [
       config.sensor_popup_house_1_name && config.sensor_popup_house_1_name.trim() ? config.sensor_popup_house_1_name.trim() : this.getEntityName(config.sensor_popup_house_1),
@@ -2143,11 +2151,9 @@ class LuminaEnergyCard extends HTMLElement {
       config.sensor_popup_house_6_name && config.sensor_popup_house_6_name.trim() ? config.sensor_popup_house_6_name.trim() : this.getEntityName(config.sensor_popup_house_6)
     ];
     
-    const use_kw = config.display_unit === 'kW';
-    const lines = popupHouseValues.map((v, i) => {
-      const sensorId = [config.sensor_popup_house_1, config.sensor_popup_house_2, config.sensor_popup_house_3, config.sensor_popup_house_4, config.sensor_popup_house_5, config.sensor_popup_house_6][i];
-      return v !== null ? `${popupHouseNames[i]}: ${this.formatPopupValue(v, sensorId)}` : '';
-    }).filter(line => line);
+    const lines = popupHouseValues
+      .map((valueText, i) => (valueText ? `${popupHouseNames[i]}: ${valueText}` : ''))
+      .filter((line) => line);
     if (!lines.length) return;
     
     // Calculate popup dimensions based on content
@@ -2776,7 +2782,7 @@ class LuminaEnergyCard extends HTMLElement {
   }
 
   static get version() {
-    return '1.1.26';
+    return '1.1.27';
   }
 }
 
@@ -4027,6 +4033,7 @@ class LuminaEnergyCardEditor extends HTMLElement {
 
   _createSchemaDefs(localeStrings, optionDefs) {
     const entitySelector = { entity: { domain: ['sensor', 'input_number'] } };
+    const popupEntitySelector = { entity: {} };
     const fields = localeStrings.fields;
     const define = (entries) => entries.map((entry) => {
       const result = { ...entry };
@@ -4216,45 +4223,45 @@ class LuminaEnergyCardEditor extends HTMLElement {
         { name: 'sensor_popup_bat_6_font_size', label: (fields.sensor_popup_bat_6_font_size && fields.sensor_popup_bat_6_font_size.label) || '', helper: (fields.sensor_popup_bat_6_font_size && fields.sensor_popup_bat_6_font_size.helper) || '', selector: { text: { mode: 'blur' } }, default: '16' }
       ]),
       pvPopup: define([
-        { name: 'sensor_popup_pv_1', label: (fields.sensor_popup_pv_1 && fields.sensor_popup_pv_1.label) || '', helper: (fields.sensor_popup_pv_1 && fields.sensor_popup_pv_1.helper) || '', selector: entitySelector },
+        { name: 'sensor_popup_pv_1', label: (fields.sensor_popup_pv_1 && fields.sensor_popup_pv_1.label) || '', helper: (fields.sensor_popup_pv_1 && fields.sensor_popup_pv_1.helper) || '', selector: popupEntitySelector },
         { name: 'sensor_popup_pv_1_name', label: (fields.sensor_popup_pv_1_name && fields.sensor_popup_pv_1_name.label) || '', helper: (fields.sensor_popup_pv_1_name && fields.sensor_popup_pv_1_name.helper) || '', selector: { text: {} } },
-        { name: 'sensor_popup_pv_2', label: (fields.sensor_popup_pv_2 && fields.sensor_popup_pv_2.label) || '', helper: (fields.sensor_popup_pv_2 && fields.sensor_popup_pv_2.helper) || '', selector: entitySelector },
+        { name: 'sensor_popup_pv_2', label: (fields.sensor_popup_pv_2 && fields.sensor_popup_pv_2.label) || '', helper: (fields.sensor_popup_pv_2 && fields.sensor_popup_pv_2.helper) || '', selector: popupEntitySelector },
         { name: 'sensor_popup_pv_2_name', label: (fields.sensor_popup_pv_2_name && fields.sensor_popup_pv_2_name.label) || '', helper: (fields.sensor_popup_pv_2_name && fields.sensor_popup_pv_2_name.helper) || '', selector: { text: {} } },
-        { name: 'sensor_popup_pv_3', label: (fields.sensor_popup_pv_3 && fields.sensor_popup_pv_3.label) || '', helper: (fields.sensor_popup_pv_3 && fields.sensor_popup_pv_3.helper) || '', selector: entitySelector },
+        { name: 'sensor_popup_pv_3', label: (fields.sensor_popup_pv_3 && fields.sensor_popup_pv_3.label) || '', helper: (fields.sensor_popup_pv_3 && fields.sensor_popup_pv_3.helper) || '', selector: popupEntitySelector },
         { name: 'sensor_popup_pv_3_name', label: (fields.sensor_popup_pv_3_name && fields.sensor_popup_pv_3_name.label) || '', helper: (fields.sensor_popup_pv_3_name && fields.sensor_popup_pv_3_name.helper) || '', selector: { text: {} } },
-        { name: 'sensor_popup_pv_4', label: (fields.sensor_popup_pv_4 && fields.sensor_popup_pv_4.label) || '', helper: (fields.sensor_popup_pv_4 && fields.sensor_popup_pv_4.helper) || '', selector: entitySelector },
+        { name: 'sensor_popup_pv_4', label: (fields.sensor_popup_pv_4 && fields.sensor_popup_pv_4.label) || '', helper: (fields.sensor_popup_pv_4 && fields.sensor_popup_pv_4.helper) || '', selector: popupEntitySelector },
         { name: 'sensor_popup_pv_4_name', label: (fields.sensor_popup_pv_4_name && fields.sensor_popup_pv_4_name.label) || '', helper: (fields.sensor_popup_pv_4_name && fields.sensor_popup_pv_4_name.helper) || '', selector: { text: {} } },
-        { name: 'sensor_popup_pv_5', label: (fields.sensor_popup_pv_5 && fields.sensor_popup_pv_5.label) || '', helper: (fields.sensor_popup_pv_5 && fields.sensor_popup_pv_5.helper) || '', selector: entitySelector },
+        { name: 'sensor_popup_pv_5', label: (fields.sensor_popup_pv_5 && fields.sensor_popup_pv_5.label) || '', helper: (fields.sensor_popup_pv_5 && fields.sensor_popup_pv_5.helper) || '', selector: popupEntitySelector },
         { name: 'sensor_popup_pv_5_name', label: (fields.sensor_popup_pv_5_name && fields.sensor_popup_pv_5_name.label) || '', helper: (fields.sensor_popup_pv_5_name && fields.sensor_popup_pv_5_name.helper) || '', selector: { text: {} } },
-        { name: 'sensor_popup_pv_6', label: (fields.sensor_popup_pv_6 && fields.sensor_popup_pv_6.label) || '', helper: (fields.sensor_popup_pv_6 && fields.sensor_popup_pv_6.helper) || '', selector: entitySelector },
+        { name: 'sensor_popup_pv_6', label: (fields.sensor_popup_pv_6 && fields.sensor_popup_pv_6.label) || '', helper: (fields.sensor_popup_pv_6 && fields.sensor_popup_pv_6.helper) || '', selector: popupEntitySelector },
         { name: 'sensor_popup_pv_6_name', label: (fields.sensor_popup_pv_6_name && fields.sensor_popup_pv_6_name.label) || '', helper: (fields.sensor_popup_pv_6_name && fields.sensor_popup_pv_6_name.helper) || '', selector: { text: {} } }
       ]),
       batteryPopup: define([
-        { name: 'sensor_popup_bat_1', label: (fields.sensor_popup_bat_1 && fields.sensor_popup_bat_1.label) || '', helper: (fields.sensor_popup_bat_1 && fields.sensor_popup_bat_1.helper) || '', selector: entitySelector },
+        { name: 'sensor_popup_bat_1', label: (fields.sensor_popup_bat_1 && fields.sensor_popup_bat_1.label) || '', helper: (fields.sensor_popup_bat_1 && fields.sensor_popup_bat_1.helper) || '', selector: popupEntitySelector },
         { name: 'sensor_popup_bat_1_name', label: (fields.sensor_popup_bat_1_name && fields.sensor_popup_bat_1_name.label) || '', helper: (fields.sensor_popup_bat_1_name && fields.sensor_popup_bat_1_name.helper) || '', selector: { text: {} } },
-        { name: 'sensor_popup_bat_2', label: (fields.sensor_popup_bat_2 && fields.sensor_popup_bat_2.label) || '', helper: (fields.sensor_popup_bat_2 && fields.sensor_popup_bat_2.helper) || '', selector: entitySelector },
+        { name: 'sensor_popup_bat_2', label: (fields.sensor_popup_bat_2 && fields.sensor_popup_bat_2.label) || '', helper: (fields.sensor_popup_bat_2 && fields.sensor_popup_bat_2.helper) || '', selector: popupEntitySelector },
         { name: 'sensor_popup_bat_2_name', label: (fields.sensor_popup_bat_2_name && fields.sensor_popup_bat_2_name.label) || '', helper: (fields.sensor_popup_bat_2_name && fields.sensor_popup_bat_2_name.helper) || '', selector: { text: {} } },
-        { name: 'sensor_popup_bat_3', label: (fields.sensor_popup_bat_3 && fields.sensor_popup_bat_3.label) || '', helper: (fields.sensor_popup_bat_3 && fields.sensor_popup_bat_3.helper) || '', selector: entitySelector },
+        { name: 'sensor_popup_bat_3', label: (fields.sensor_popup_bat_3 && fields.sensor_popup_bat_3.label) || '', helper: (fields.sensor_popup_bat_3 && fields.sensor_popup_bat_3.helper) || '', selector: popupEntitySelector },
         { name: 'sensor_popup_bat_3_name', label: (fields.sensor_popup_bat_3_name && fields.sensor_popup_bat_3_name.label) || '', helper: (fields.sensor_popup_bat_3_name && fields.sensor_popup_bat_3_name.helper) || '', selector: { text: {} } },
-        { name: 'sensor_popup_bat_4', label: (fields.sensor_popup_bat_4 && fields.sensor_popup_bat_4.label) || '', helper: (fields.sensor_popup_bat_4 && fields.sensor_popup_bat_4.helper) || '', selector: entitySelector },
+        { name: 'sensor_popup_bat_4', label: (fields.sensor_popup_bat_4 && fields.sensor_popup_bat_4.label) || '', helper: (fields.sensor_popup_bat_4 && fields.sensor_popup_bat_4.helper) || '', selector: popupEntitySelector },
         { name: 'sensor_popup_bat_4_name', label: (fields.sensor_popup_bat_4_name && fields.sensor_popup_bat_4_name.label) || '', helper: (fields.sensor_popup_bat_4_name && fields.sensor_popup_bat_4_name.helper) || '', selector: { text: {} } },
-        { name: 'sensor_popup_bat_5', label: (fields.sensor_popup_bat_5 && fields.sensor_popup_bat_5.label) || '', helper: (fields.sensor_popup_bat_5 && fields.sensor_popup_bat_5.helper) || '', selector: entitySelector },
+        { name: 'sensor_popup_bat_5', label: (fields.sensor_popup_bat_5 && fields.sensor_popup_bat_5.label) || '', helper: (fields.sensor_popup_bat_5 && fields.sensor_popup_bat_5.helper) || '', selector: popupEntitySelector },
         { name: 'sensor_popup_bat_5_name', label: (fields.sensor_popup_bat_5_name && fields.sensor_popup_bat_5_name.label) || '', helper: (fields.sensor_popup_bat_5_name && fields.sensor_popup_bat_5_name.helper) || '', selector: { text: {} } },
-        { name: 'sensor_popup_bat_6', label: (fields.sensor_popup_bat_6 && fields.sensor_popup_bat_6.label) || '', helper: (fields.sensor_popup_bat_6 && fields.sensor_popup_bat_6.helper) || '', selector: entitySelector },
+        { name: 'sensor_popup_bat_6', label: (fields.sensor_popup_bat_6 && fields.sensor_popup_bat_6.label) || '', helper: (fields.sensor_popup_bat_6 && fields.sensor_popup_bat_6.helper) || '', selector: popupEntitySelector },
         { name: 'sensor_popup_bat_6_name', label: (fields.sensor_popup_bat_6_name && fields.sensor_popup_bat_6_name.label) || '', helper: (fields.sensor_popup_bat_6_name && fields.sensor_popup_bat_6_name.helper) || '', selector: { text: {} } }
       ]),
       housePopup: define([
-        { name: 'sensor_popup_house_1', label: (fields.sensor_popup_house_1 && fields.sensor_popup_house_1.label) || '', helper: (fields.sensor_popup_house_1 && fields.sensor_popup_house_1.helper) || '', selector: entitySelector },
+        { name: 'sensor_popup_house_1', label: (fields.sensor_popup_house_1 && fields.sensor_popup_house_1.label) || '', helper: (fields.sensor_popup_house_1 && fields.sensor_popup_house_1.helper) || '', selector: popupEntitySelector },
         { name: 'sensor_popup_house_1_name', label: (fields.sensor_popup_house_1_name && fields.sensor_popup_house_1_name.label) || '', helper: (fields.sensor_popup_house_1_name && fields.sensor_popup_house_1_name.helper) || '', selector: { text: {} } },
-        { name: 'sensor_popup_house_2', label: (fields.sensor_popup_house_2 && fields.sensor_popup_house_2.label) || '', helper: (fields.sensor_popup_house_2 && fields.sensor_popup_house_2.helper) || '', selector: entitySelector },
+        { name: 'sensor_popup_house_2', label: (fields.sensor_popup_house_2 && fields.sensor_popup_house_2.label) || '', helper: (fields.sensor_popup_house_2 && fields.sensor_popup_house_2.helper) || '', selector: popupEntitySelector },
         { name: 'sensor_popup_house_2_name', label: (fields.sensor_popup_house_2_name && fields.sensor_popup_house_2_name.label) || '', helper: (fields.sensor_popup_house_2_name && fields.sensor_popup_house_2_name.helper) || '', selector: { text: {} } },
-        { name: 'sensor_popup_house_3', label: (fields.sensor_popup_house_3 && fields.sensor_popup_house_3.label) || '', helper: (fields.sensor_popup_house_3 && fields.sensor_popup_house_3.helper) || '', selector: entitySelector },
+        { name: 'sensor_popup_house_3', label: (fields.sensor_popup_house_3 && fields.sensor_popup_house_3.label) || '', helper: (fields.sensor_popup_house_3 && fields.sensor_popup_house_3.helper) || '', selector: popupEntitySelector },
         { name: 'sensor_popup_house_3_name', label: (fields.sensor_popup_house_3_name && fields.sensor_popup_house_3_name.label) || '', helper: (fields.sensor_popup_house_3_name && fields.sensor_popup_house_3_name.helper) || '', selector: { text: {} } },
-        { name: 'sensor_popup_house_4', label: (fields.sensor_popup_house_4 && fields.sensor_popup_house_4.label) || '', helper: (fields.sensor_popup_house_4 && fields.sensor_popup_house_4.helper) || '', selector: entitySelector },
+        { name: 'sensor_popup_house_4', label: (fields.sensor_popup_house_4 && fields.sensor_popup_house_4.label) || '', helper: (fields.sensor_popup_house_4 && fields.sensor_popup_house_4.helper) || '', selector: popupEntitySelector },
         { name: 'sensor_popup_house_4_name', label: (fields.sensor_popup_house_4_name && fields.sensor_popup_house_4_name.label) || '', helper: (fields.sensor_popup_house_4_name && fields.sensor_popup_house_4_name.helper) || '', selector: { text: {} } },
-        { name: 'sensor_popup_house_5', label: (fields.sensor_popup_house_5 && fields.sensor_popup_house_5.label) || '', helper: (fields.sensor_popup_house_5 && fields.sensor_popup_house_5.helper) || '', selector: entitySelector },
+        { name: 'sensor_popup_house_5', label: (fields.sensor_popup_house_5 && fields.sensor_popup_house_5.label) || '', helper: (fields.sensor_popup_house_5 && fields.sensor_popup_house_5.helper) || '', selector: popupEntitySelector },
         { name: 'sensor_popup_house_5_name', label: (fields.sensor_popup_house_5_name && fields.sensor_popup_house_5_name.label) || '', helper: (fields.sensor_popup_house_5_name && fields.sensor_popup_house_5_name.helper) || '', selector: { text: {} } },
-        { name: 'sensor_popup_house_6', label: (fields.sensor_popup_house_6 && fields.sensor_popup_house_6.label) || '', helper: (fields.sensor_popup_house_6 && fields.sensor_popup_house_6.helper) || '', selector: entitySelector },
+        { name: 'sensor_popup_house_6', label: (fields.sensor_popup_house_6 && fields.sensor_popup_house_6.label) || '', helper: (fields.sensor_popup_house_6 && fields.sensor_popup_house_6.helper) || '', selector: popupEntitySelector },
         { name: 'sensor_popup_house_6_name', label: (fields.sensor_popup_house_6_name && fields.sensor_popup_house_6_name.label) || '', helper: (fields.sensor_popup_house_6_name && fields.sensor_popup_house_6_name.helper) || '', selector: { text: {} } }
       ])
     };
