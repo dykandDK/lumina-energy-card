@@ -205,6 +205,9 @@ grid_activity_threshold: 50
 ### Popups (Editor Options)
 
 The card provides three editable popup groups (PV, House, Battery). Each popup exposes up to six entity slots, optional custom names, per-line colour pickers, and font-size controls.
+The entities specfied in here will not have any conversions done to them other tha the name override if you specify one. This has been done delibertly so it is more flexible. 
+It is not only sensors that can be specifed in the popups. Text based entities can be displayed (e.g. alerts). If you have a sensor that needs its units converted. Please use
+a helper to display it.
 
 - PV Popup
   - `sensor_popup_pv_1` .. `sensor_popup_pv_6`: entity selectors for PV popup lines.
