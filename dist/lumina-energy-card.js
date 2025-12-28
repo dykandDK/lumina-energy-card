@@ -2703,6 +2703,7 @@ class LuminaEnergyCardEditor extends HTMLElement {
           battery: { title: 'Battery', helper: 'Configure battery entities.' },
           grid: { title: 'Grid', helper: 'Configure grid entities.' },
           car: { title: 'Car', helper: 'Configure EV entities.' },
+          other: { title: 'Other', helper: 'Additional sensors and advanced toggles.' },
           pvPopup: { title: 'PV Popup', helper: 'Configure entities for the PV popup display.' },
           housePopup: { title: 'House Popup', helper: 'Configure entities for the house popup display.' },
           batteryPopup: { title: 'Battery Popup', helper: 'Configure battery popup display.' },
@@ -2941,6 +2942,7 @@ class LuminaEnergyCardEditor extends HTMLElement {
           battery: { title: 'Batteria', helper: 'Configura le entita della batteria.' },
           grid: { title: 'Rete', helper: 'Configura le entita della rete.' },
           car: { title: 'Auto', helper: 'Configura le entita EV.' },
+          other: { title: 'Altro', helper: 'Sensori aggiuntivi e opzioni avanzate.' },
           entities: { title: 'Selezione entita', helper: 'Scegli le entita PV, batteria, rete, carico ed EV utilizzate dalla scheda. Come minimo deve essere specificato il sensore PV totale oppure gli array di stringhe PV.' },
           pvPopup: { title: 'PV Popup', helper: 'Configura le entita per la visualizzazione del popup PV.' },
           housePopup: { title: 'House Popup', helper: 'Configura le entita per la visualizzazione del popup casa.' },
@@ -3174,6 +3176,7 @@ class LuminaEnergyCardEditor extends HTMLElement {
           battery: { title: 'Batterie', helper: 'Batterie-Entitaeten konfigurieren.' },
           grid: { title: 'Netz', helper: 'Netz-Entitaeten konfigurieren.' },
           car: { title: 'Auto', helper: 'EV-Entitaeten konfigurieren.' },
+          other: { title: 'Sonstiges', helper: 'Zusätzliche Sensoren und Erweiterungsoptionen.' },
           entities: { title: 'Entitaetenauswahl', helper: 'PV-, Batterie-, Netz-, Verbrauchs- und optionale EV-Entitaeten waehlen. Entweder der PV-Gesamt-Sensor oder Ihre PV-String-Arrays muessen mindestens angegeben werden.' },
           pvPopup: { title: 'PV Popup', helper: 'Entitaeten fuer die PV-Popup-Anzeige konfigurieren.' },
           housePopup: { title: 'House Popup', helper: 'Entitaeten fuer die House-Popup-Anzeige konfigurieren.' },
@@ -3403,6 +3406,7 @@ class LuminaEnergyCardEditor extends HTMLElement {
           battery: { title: 'Batterie', helper: 'Configurer les entités de la batterie.' },
           grid: { title: 'Réseau', helper: 'Configurer les entités du réseau.' },
           car: { title: 'Voiture', helper: 'Configurer les entités EV.' },
+          other: { title: 'Autres', helper: 'Capteurs supplémentaires et options avancées.' },
           entities: { title: 'Sélection d entités', helper: 'Choisissez les entités PV, batterie, réseau, charge et EV utilisées par la carte. Soit le capteur PV total, soit vos tableaux de chaînes PV doivent être spécifiés au minimum.' },
           pvPopup: { title: 'Popup PV', helper: 'Configurer les entités pour l\'affichage du popup PV.' },
           housePopup: { title: 'Popup Maison', helper: 'Configurer les entités pour l\'affichage du popup maison.' },
@@ -3638,6 +3642,7 @@ class LuminaEnergyCardEditor extends HTMLElement {
           battery: { title: 'Batterij', helper: 'Configureer batterij entiteiten.' },
           grid: { title: 'Grid', helper: 'Configureer grid entiteiten.' },
           car: { title: 'Auto', helper: 'Configureer EV entiteiten.' },
+          other: { title: 'Overig', helper: 'Aanvullende sensoren en geavanceerde opties.' },
           entities: { title: 'Entiteit selectie', helper: 'Kies de PV, batterij, grid, load en EV entiteiten gebruikt door de kaart. Of de totale PV sensor, of uw PV string arrays moeten minimaal worden gespecificeerd.' },
           pvPopup: { title: 'PV Popup', helper: 'Configureer entiteiten voor de PV popup weergave.' },
           housePopup: { title: 'House Popup', helper: 'Configureer entiteiten voor de House popup weergave.' },
@@ -3958,7 +3963,6 @@ class LuminaEnergyCardEditor extends HTMLElement {
         { name: 'sensor_daily', label: fields.sensor_daily.label, helper: fields.sensor_daily.helper, selector: entitySelector },
         { name: 'show_pv_strings', label: fields.show_pv_strings.label, helper: fields.show_pv_strings.helper, selector: { boolean: {} } },
         { name: 'sensor_home_load', label: fields.sensor_home_load.label, helper: fields.sensor_home_load.helper, selector: entitySelector },
-        { name: 'sensor_heat_pump_consumption', label: fields.sensor_heat_pump_consumption.label, helper: fields.sensor_heat_pump_consumption.helper, selector: entitySelector },
         
       ]),
       array2: define([
@@ -4004,6 +4008,10 @@ class LuminaEnergyCardEditor extends HTMLElement {
         { name: 'car2_power', label: fields.car2_power.label, helper: fields.car2_power.helper, selector: entitySelector },
         { name: 'car2_soc', label: fields.car2_soc.label, helper: fields.car2_soc.helper, selector: entitySelector },
         { name: 'car2_charger_power', label: fields.car2_charger_power.label, helper: fields.car2_charger_power.helper, selector: entitySelector },
+        
+      ]),
+      other: define([
+        { name: 'sensor_heat_pump_consumption', label: fields.sensor_heat_pump_consumption.label, helper: fields.sensor_heat_pump_consumption.helper, selector: entitySelector },
         
       ]),
       entities: define([
@@ -4159,6 +4167,7 @@ class LuminaEnergyCardEditor extends HTMLElement {
       { id: 'battery', title: sections.battery.title, helper: sections.battery.helper, schema: schemaDefs.battery, defaultOpen: false },
       { id: 'grid', title: sections.grid.title, helper: sections.grid.helper, schema: schemaDefs.grid, defaultOpen: false },
       { id: 'car', title: sections.car.title, helper: sections.car.helper, schema: schemaDefs.car, defaultOpen: false },
+      { id: 'other', title: sections.other.title, helper: sections.other.helper, schema: schemaDefs.other, defaultOpen: false },
       { id: 'pvPopup', title: sections.pvPopup.title, helper: sections.pvPopup.helper, schema: schemaDefs.pvPopup, defaultOpen: false },
       { id: 'batteryPopup', title: sections.batteryPopup.title, helper: sections.batteryPopup.helper, schema: schemaDefs.batteryPopup, defaultOpen: false },
       { id: 'housePopup', title: sections.housePopup.title, helper: sections.housePopup.helper, schema: schemaDefs.housePopup, defaultOpen: false },
