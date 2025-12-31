@@ -1,7 +1,7 @@
 /**
  * Lumina Energy Card
  * Custom Home Assistant card for energy flow visualization
- * Version: 1.1.29
+ * Version: 1.1.31
  * Tested with Home Assistant 2025.12+
  */
 const BATTERY_GEOMETRY = { X: 260, Y_BASE: 350, WIDTH: 55, MAX_HEIGHT: 84 };
@@ -1033,6 +1033,15 @@ class LuminaEnergyCard extends HTMLElement {
       return Math.min(Math.max(num, 0), 100000);
     })();
 
+    if (config.sensor_grid_import_daily) {
+      const raw = this.getStateSafe(config.sensor_grid_import_daily);
+      gridImportDaily = Number.isFinite(Number(raw)) ? Number(raw) : 0;
+    }
+    if (config.sensor_grid_export_daily) {
+      const raw = this.getStateSafe(config.sensor_grid_export_daily);
+      gridExportDaily = Number.isFinite(Number(raw)) ? Number(raw) : 0;
+    }
+
     if (hasCombinedGrid) {
       const grid_raw = this.getStateSafe(config.sensor_grid_power);
       const gridAdjusted = config.invert_grid ? (grid_raw * -1) : grid_raw;
@@ -1058,14 +1067,6 @@ class LuminaEnergyCard extends HTMLElement {
         if (Math.abs(gridExport) < gridActivityThreshold) {
           gridExport = 0;
         }
-      }
-      if (config.sensor_grid_import_daily) {
-        const raw = this.getStateSafe(config.sensor_grid_import_daily);
-        gridImportDaily = Number.isFinite(Number(raw)) ? Number(raw) : 0;
-      }
-      if (config.sensor_grid_export_daily) {
-        const raw = this.getStateSafe(config.sensor_grid_export_daily);
-        gridExportDaily = Number.isFinite(Number(raw)) ? Number(raw) : 0;
       }
       gridNet = gridImport - gridExport;
       if (config.invert_grid) {
@@ -2837,7 +2838,7 @@ class LuminaEnergyCard extends HTMLElement {
   }
 
   static get version() {
-    return '1.1.29';
+    return '1.1.31';
   }
 }
 
